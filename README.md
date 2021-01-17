@@ -61,9 +61,7 @@ You need to restart the client and must ensure that the remarkable is on.
 To excecute the download, the in-memory-mapping (reading) and the export call all the commands inside the console.
 
 ```
-RM > download -n
-RM > read -n
-RM > export -n
+RM > notebooks -d -r -e
 ```
 
 The console could be closed by
