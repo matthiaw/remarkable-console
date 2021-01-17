@@ -1,9 +1,20 @@
 # remarkable-console
+
+```
+__________               _________                
+\______   \ ____   _____ \_   ___ \  ____   ____  
+ |       _// __ \ /     \/    \  \/ /  _ \ /    \ 
+ |    |   \  ___/|  Y Y  \     \___(  <_> )   |  \
+ |____|_  /\___  >__|_|  /\______  /\____/|___|  /
+        \/     \/      \/        \/            \/ 
+RemCom - Remarkable Console (0.1)
+```
+
 I looked for a paperless solution and bought a [remarkable](https://remarkable.com/). But when i 
-want to share some drawings a was frustrated about the quality of the SVG files and PDF files. 
+want to share some drawings i was frustrated about the quality of the SVG files and PDF files.  So this project started with the goal to get better exports through a java terminal based application.
 
 The linux based remarkable saves the pages in zip-file and a binary format.
-Detals could be found at [https://remarkablewiki.com/start](https://remarkablewiki.com/start).
+Details could be found at [https://remarkablewiki.com/start](https://remarkablewiki.com/start).
 
 **Requirements** 
  * Download zip-files of every notebook which is synchronized to the web application
