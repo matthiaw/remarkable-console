@@ -1,0 +1,6 @@
+/target/
+/application.properties
+/application-*
+/templates
+/exports
+/notebooks

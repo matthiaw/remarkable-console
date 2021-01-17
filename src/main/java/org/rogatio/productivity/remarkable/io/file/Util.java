@@ -1,0 +1,132 @@
+/*
+ * Remarkable Console - Copyright (C) 2021 Matthias Wegner
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+package org.rogatio.productivity.remarkable.io.file;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.rogatio.productivity.remarkable.io.PropertiesCache;
+import org.rogatio.productivity.remarkable.model.notebook.Notebook;
+import org.rogatio.productivity.remarkable.model.notebook.Page;
+
+/**
+ * The Class Util.
+ */
+public class Util {
+
+	/** The Constant logger. */
+	protected static final Logger logger = LogManager.getLogger(Util.class);
+
+	/**
+	 * File exists.
+	 *
+	 * @param filename the filename
+	 * @return true, if successful
+	 */
+	public static boolean fileExists(String filename) {
+		File f = new File(filename);
+		if (f.exists()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Gets the filename.
+	 *
+	 * @param page   the page
+	 * @param suffix the suffix
+	 * @return the filename
+	 */
+	public static String getFilename(Page page, String suffix) {
+		String no = String.format("%03d", page.getPageNumber());
+		String name = EXPORTFOLDER + File.separatorChar + page.getNotebook().getName() + File.separatorChar + "Page_"
+				+ no + "." + suffix;
+		return name;
+	}
+
+	/**
+	 * Stream to bytes.
+	 *
+	 * @param in the in
+	 * @return the byte[]
+	 */
+	public static byte[] streamToBytes(InputStream in) {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		int nRead;
+		byte[] data = new byte[16384];
+
+		try {
+			while ((nRead = in.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, nRead);
+			}
+		} catch (IOException e) {
+		}
+
+		return buffer.toByteArray();
+	}
+
+	/** The Constant EXPORTFOLDER. */
+	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getProperty(PropertiesCache.EXPORTFOLDER);
+
+	/**
+	 * Creates the pdf.
+	 *
+	 * @param notebook the notebook
+	 */
+	public static void createPdf(Notebook notebook) {
+		for (Page page : notebook.getPages()) {
+			Svg2Pdf.convert(page);
+		}
+		Svg2Pdf.merge(notebook);
+	}
+
+	/**
+	 * Creates the png.
+	 *
+	 * @param notebook the notebook
+	 */
+	public static void createPng(Notebook notebook) {
+		for (Page page : notebook.getPages()) {
+			try {
+				Svg2Png.createPng(page);
+			} catch (TranscoderException | IOException e) {
+				logger.error("Error creating png", e);
+			}
+		}
+	}
+
+	/**
+	 * Creates the svg.
+	 *
+	 * @param notebook the notebook
+	 */
+	public static void createSvg(Notebook notebook) {
+		for (Page page : notebook.getPages()) {
+			SvgDocument.create(page);
+			SvgMerger.merge(page, page.getTemplateName(), new File(getFilename(page, "svg")));
+		}
+	}
+
+}
