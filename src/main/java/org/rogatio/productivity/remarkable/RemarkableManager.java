@@ -17,6 +17,8 @@
  */
 package org.rogatio.productivity.remarkable;
 
+import static org.rogatio.productivity.remarkable.io.PropertiesCache.DEVICETOKEN;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,12 +61,31 @@ public class RemarkableManager {
 	/** The user token for the session */
 	private String userToken;
 
+	private static RemarkableManager INSTANCE;
+
+	public static RemarkableManager getInstance() {
+
+		if (INSTANCE == null) {
+			boolean deviceTokenExists = PropertiesCache.getInstance().propertyExists(DEVICETOKEN);
+			
+			if (!deviceTokenExists) {
+				logger.error("Device token not set. Close remarkable console application.");
+				System.exit(0);
+			}
+
+			String deviceToken = PropertiesCache.getInstance().getProperty(DEVICETOKEN);
+			INSTANCE = new RemarkableManager(deviceToken);
+		}
+
+		return INSTANCE;
+	}
+
 	/**
 	 * Instantiates a new remarkable manager.
 	 *
 	 * @param deviceToken the device token
 	 */
-	public RemarkableManager(String deviceToken) {
+	private RemarkableManager(String deviceToken) {
 		// instantiates the remarkable client
 		client = new RemarkableClient();
 

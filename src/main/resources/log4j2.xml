@@ -23,7 +23,7 @@
 			<!-- <AppenderRef ref="FileAppender" /> -->
 
 			<AppenderRef ref="TerminalAppender" />
-			
+	
 		</Root>
 	</Loggers>
 </Configuration>

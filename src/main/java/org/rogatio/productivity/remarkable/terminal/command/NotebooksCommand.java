@@ -17,41 +17,45 @@
  */
 package org.rogatio.productivity.remarkable.terminal.command;
 
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
 import org.rogatio.productivity.remarkable.RemarkableManager;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.ParentCommand;
 
 /**
- * The Class ReadNotebooks.
+ * The Class DownloadNotebooks.
  */
-@Command(name = "Read", version = "Read 1.0", mixinStandardHelpOptions = true)
-public class ReadNotebooks implements Runnable {
+@Command(name = "notebooks",description = "Handle Notebooks",  version = "1.0", mixinStandardHelpOptions = true)
+public class NotebooksCommand implements Callable {
 
-	/** The remarkable manager. */
-	private RemarkableManager remarkableManager;
+	@ParentCommand
+	private CliCommands parent;
 
-	/**
-	 * Instantiates a new read notebooks.
-	 *
-	 * @param remarkableManager the remarkable manager
-	 */
-	public ReadNotebooks(RemarkableManager remarkableManager) {
-		this.remarkableManager = remarkableManager;
-	}
+	@Option(names = { "-d", "--download" }, description = "Download notebooks")
+	boolean download;
 
-	/** The all. */
-	@Option(names = { "-n", "--notebook" }, description = "Reading notebooks")
-	boolean all;
+	@Option(names = { "-r", "--read" }, description = "Read notebooks")
+	boolean read;
 
-	/**
-	 * Run.
-	 */
-	@Override
-	public void run() {
-		if (all) {
-			remarkableManager.readNotebooks();
+	@Option(names = { "-e", "--export" }, description = "Export notebooks")
+	boolean export;
+
+	
+	public Void call() throws IOException {
+		if (download) {
+			RemarkableManager.getInstance().downloadNotebooks();
 		}
+		if (read) {
+			RemarkableManager.getInstance().readNotebooks();
+		}
+		if (export) {
+			RemarkableManager.getInstance().exportNotebooks();
+		}
+		return null;
 	}
 
 }

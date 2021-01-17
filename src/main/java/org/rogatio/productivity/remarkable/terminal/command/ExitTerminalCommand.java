@@ -17,41 +17,21 @@
  */
 package org.rogatio.productivity.remarkable.terminal.command;
 
-import org.rogatio.productivity.remarkable.RemarkableManager;
+import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
+import picocli.CommandLine.ParentCommand;
 
-/**
- * The Class DownloadNotebooks.
- */
-@Command(name = "Download", version = "Download 1.0", mixinStandardHelpOptions = true)
-public class DownloadNotebooks implements Runnable {
+@Command(name = "exit", description = "Exit the terminal", version = "1.0", mixinStandardHelpOptions = true)
+public class ExitTerminalCommand implements Callable {
 
-	/** The remarkable manager. */
-	private RemarkableManager remarkableManager;
+	@ParentCommand
+	private CliCommands parent;
 
-	/**
-	 * Instantiates a new download notebooks.
-	 *
-	 * @param remarkableManager the remarkable manager
-	 */
-	public DownloadNotebooks(RemarkableManager remarkableManager) {
-		this.remarkableManager = remarkableManager;
-	}
-
-	/** The all. */
-	@Option(names = { "-n", "--notebook" }, description = "Download notebooks")
-	boolean all;
-
-	/**
-	 * Run.
-	 */
-	@Override
-	public void run() {
-		if (all) {
-			remarkableManager.downloadNotebooks();
-		}
+	public Void call() throws IOException {
+		System.exit(0);
+		return null;
 	}
 
 }
