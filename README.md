@@ -1,5 +1,5 @@
 # remarkable-console
-I looked for a paperless solution and bought a remarkable. But when i 
+I looked for a paperless solution and bought a [remarkable](https://remarkable.com/). But when i 
 want to share some drawings a was frustrated about the quality of the SVG files and PDF files. 
 
 The linux based remarkable saves the pages in zip-file and a binary format.
