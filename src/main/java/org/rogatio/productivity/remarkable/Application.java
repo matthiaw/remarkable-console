@@ -20,6 +20,7 @@ package org.rogatio.productivity.remarkable;
 import static org.rogatio.productivity.remarkable.io.PropertiesCache.DEVICETOKEN;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -172,6 +173,39 @@ public class Application {
 
 		// download templates via ssh if not existing
 		if (!new File(templateDir).exists()) {
+
+			boolean hostIpExists = PropertiesCache.getInstance().propertyExists(PropertiesCache.SSHHOST);
+			boolean hostPswdExists = PropertiesCache.getInstance().propertyExists(PropertiesCache.SSHPSWD);
+
+			if (!hostIpExists || !hostPswdExists) {
+				System.out.println(
+						"Open in remarkable Settings > About > Copyrights and licenses > General information (scroll down):");
+				Scanner sc = new Scanner(System.in);
+
+				if (!hostIpExists) {
+					System.out.println("Enter IP-Host-Adress:");
+					PropertiesCache.getInstance().setProperty(PropertiesCache.SSHHOST, sc.nextLine().trim());
+				}
+
+				if (!hostPswdExists) {
+					System.out.println("Enter Password (for root):");
+					PropertiesCache.getInstance().setProperty(PropertiesCache.SSHPSWD, sc.nextLine().trim());
+				}
+
+				try {
+					PropertiesCache.getInstance().flush();
+				} catch (FileNotFoundException e) {
+					logger.error("Error setting ssh properties", e);
+				} catch (IOException e) {
+					logger.error("Error setting ssh properties", e);
+				} finally {
+					sc.close();
+				}
+			}
+
+			logger.info("New SSH configuration created");
+
+			// download templates with ssh-connection
 			rm.downloadTemplates();
 		}
 	}
