@@ -31,7 +31,7 @@ public class Prompt {
 	 * @return the prefix
 	 */
 	public static String getPrefix() {
-		return TerminalColor.PURPLE_BACKGROUND + PREFIX + TerminalColor.RESET;
+		return TerminalColor.WHITE_BRIGHT + PREFIX + TerminalColor.RESET;
 	}
 
 	/**

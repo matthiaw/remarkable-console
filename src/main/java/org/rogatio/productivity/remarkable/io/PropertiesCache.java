@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.rogatio.productivity.remarkable.Application;
 
 /**
  * The Class PropertiesCache.
@@ -41,8 +42,8 @@ public class PropertiesCache {
 	/** The config prop. */
 	private final Properties configProp = new Properties();
 
-	/** The versionno. */
-	private final String VERSIONNO = "0.1";
+	/** The version. Only works in build. */
+	private final String VERSIONNO = Application.class.getPackage().getImplementationVersion();
 
 	/** The Constant TEMPLATEDIRHOST. */
 	public final static String TEMPLATEDIRHOST = "/usr/share/remarkable/templates/";
@@ -153,7 +154,6 @@ public class PropertiesCache {
 			create();
 		}
 
-		// Private constructor to restrict new instances
 		try {
 			File file = new File(PROPERTYFILE);
 			InputStream in = new FileInputStream(file);

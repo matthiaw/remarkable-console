@@ -11,11 +11,11 @@ import picocli.CommandLine.Command;
 @Command(name = "", description = "Interactive remarkable console with completion", footer = { "",
 		"Use 'exit' to end console." }, subcommands = { ExitTerminalCommand.class,
 				ClearScreenCommand.class, NotebooksCommand.class })
-public class CliCommands implements Runnable {
+public class CommandlineCommands implements Runnable {
 	public LineReaderImpl reader;
 	public PrintWriter out;
 
-	public CliCommands() {
+	public CommandlineCommands() {
 	}
 
 	public void setReader(LineReader reader) {

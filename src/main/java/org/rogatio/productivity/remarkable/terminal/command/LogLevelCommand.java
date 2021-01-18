@@ -17,7 +17,7 @@ public class LogLevelCommand implements Runnable {
 	private LogLevel level;
 
 	@ParentCommand
-	CliCommands parent;
+	CommandlineCommands parent;
 
 	public void run() {
 		

@@ -27,7 +27,7 @@ import picocli.CommandLine.ParentCommand;
 public class ExitTerminalCommand implements Callable {
 
 	@ParentCommand
-	private CliCommands parent;
+	private CommandlineCommands parent;
 
 	public Void call() throws IOException {
 		System.exit(0);

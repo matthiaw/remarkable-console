@@ -33,7 +33,7 @@ import picocli.CommandLine.ParentCommand;
 public class NotebooksCommand implements Callable {
 
 	@ParentCommand
-	private CliCommands parent;
+	private CommandlineCommands parent;
 
 	@Option(names = { "-d", "--download" }, description = "Download notebooks")
 	boolean download;

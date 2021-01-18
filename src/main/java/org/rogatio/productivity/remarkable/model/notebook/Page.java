@@ -105,7 +105,15 @@ public class Page {
 	 * @return the template name
 	 */
 	public String getTemplateName() {
-		return notebook.getDefaultTemplate();//notebook.getTemplateNames().get(this.getPageNumber() );
+		
+		String templateName = notebook.getTemplateNames().get(this.getPageNumber() );
+		if (templateName!=null) {
+			if (!templateName.equals("")) {
+				return templateName;
+			}
+		}
+		
+		return notebook.getDefaultTemplate();
 	}
 	
 	/**

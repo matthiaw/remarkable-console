@@ -30,8 +30,12 @@ public class TerminalHeader {
 			+ " |       _// __ \\ /     \\/    \\  \\/ /  _ \\ /    \\ \r\n"
 			+ " |    |   \\  ___/|  Y Y  \\     \\___(  <_> )   |  \\\r\n"
 			+ " |____|_  /\\___  >__|_|  /\\______  /\\____/|___|  /\r\n"
-			+ "        \\/     \\/      \\/        \\/            \\/ \r\n" + "RemCom - Remarkable Console ("
-			+ PropertiesCache.getInstance().getProperty(PropertiesCache.VERSION) + ")\r\n";
+			+ "        \\/     \\/      \\/        \\/            \\/ \r\n";
+
+	private static final String HEADERFOOTER =
+
+			"RemCom - Remarkable Console (" + PropertiesCache.getInstance().getProperty(PropertiesCache.VERSION)
+					+ ")\r\n";
 
 	/**
 	 * Gets the header.
@@ -39,6 +43,12 @@ public class TerminalHeader {
 	 * @return the header
 	 */
 	public static String getHeader() {
-		return HEADER;
+
+		String h = new String();
+		for (char letter : HEADER.toCharArray()) {
+			h += TerminalColor.getRandomForegroundColor() + letter + TerminalColor.RESET;
+		}
+
+		return h + TerminalColor.BLACK_BACKGROUND + TerminalColor.WHITE_BRIGHT + HEADERFOOTER + TerminalColor.RESET;
 	}
 }

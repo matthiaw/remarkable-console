@@ -16,6 +16,10 @@
 	</Appenders>
 	<Loggers>
 
+		<Logger name="org.eclipse.jetty" level="INFO" />
+
+		<Logger name="jakarta.servlet" level="INFO" />
+
 		<Root level="DEBUG">
 
 			<!-- <AppenderRef ref="ConsoleAppender" /> -->
@@ -23,7 +27,7 @@
 			<!-- <AppenderRef ref="FileAppender" /> -->
 
 			<AppenderRef ref="TerminalAppender" />
-	
+
 		</Root>
 	</Loggers>
 </Configuration>

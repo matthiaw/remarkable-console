@@ -10,7 +10,7 @@ import picocli.CommandLine.ParentCommand;
 public class ClearScreenCommand implements Callable {
 
 	@ParentCommand
-	private CliCommands parent;
+	private CommandlineCommands parent;
 
 	public Void call() throws IOException {
 		parent.reader.clearScreen();
