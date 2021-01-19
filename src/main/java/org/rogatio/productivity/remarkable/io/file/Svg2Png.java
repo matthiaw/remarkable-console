@@ -17,11 +17,13 @@
  */
 package org.rogatio.productivity.remarkable.io.file;
 
+import java.awt.RenderingHints;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Paths;
 
+import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -34,18 +36,30 @@ import org.rogatio.productivity.remarkable.model.notebook.Page;
  * The Class Svg2Png.
  */
 public class Svg2Png {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Svg2Png.class);
 
+	public static void createThumbnail(Page page) throws TranscoderException, IOException {
+		createPng(page, "_thumbnail", 0.1);
+	}
+
+	public static void createPng(Page page, double scale) throws TranscoderException, IOException {
+		createPng(page, null, scale);
+	}
+
 	/**
-	 * Creates the png.
-	 *
-	 * @param page the page
-	 * @throws TranscoderException the transcoder exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param page
+	 * @param scale
+	 * @throws TranscoderException
+	 * @throws IOException
 	 */
-	public static void createPng(Page page) throws TranscoderException, IOException {
+	public static void createPng(Page page, String suffix, double scale) throws TranscoderException, IOException {
+
+		if (scale <= 0.0) {
+			scale = 1.0;
+		}
 
 		String svg = Util.getFilename(page, "svg");
 
@@ -53,23 +67,53 @@ public class Svg2Png {
 			SvgDocument.create(page);
 		}
 
-		String png = Util.getFilename(page, "png");
+		String png = Util.getFilename(page, suffix, "png");
 
 		logger.info("Create '" + png + "'");
 
 		// https://stackoverflow.com/questions/45239099/apache-batik-no-writeadapter-is-available
-		// Step -1: We read the input SVG document into Transcoder Input
-		// We use Java NIO for this purpose
+		// Read the input SVG document into Transcoder Input
 		String svg_URI_input = Paths.get(svg).toUri().toURL().toString();
 		TranscoderInput input_svg_image = new TranscoderInput(svg_URI_input);
-		// Step-2: Define OutputStream to PNG Image and attach to TranscoderOutput
+		// Define OutputStream to PNG Image and attach to TranscoderOutput
 		OutputStream png_ostream = new FileOutputStream(png);
 		TranscoderOutput output_png_image = new TranscoderOutput(png_ostream);
-		// Step-3: Create PNGTranscoder and define hints if required
-		PNGTranscoder my_converter = new PNGTranscoder();
-		// Step-4: Convert and Write output
-		my_converter.transcode(input_svg_image, output_png_image);
-		// Step 5- close / flush Output Stream
+
+		// Create PNGTranscoder and define hints
+		PNGTranscoder transcoder = new PNGTranscoder() {
+			@Override
+			protected ImageRenderer createRenderer() {
+				ImageRenderer r = super.createRenderer();
+
+				RenderingHints rh = r.getRenderingHints();
+				rh.add(new RenderingHints(RenderingHints.KEY_ALPHA_INTERPOLATION,
+						RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY));
+				rh.add(new RenderingHints(RenderingHints.KEY_INTERPOLATION,
+						RenderingHints.VALUE_INTERPOLATION_BILINEAR));
+				rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+				rh.add(new RenderingHints(RenderingHints.KEY_COLOR_RENDERING,
+						RenderingHints.VALUE_COLOR_RENDER_QUALITY));
+				rh.add(new RenderingHints(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE));
+				rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+				rh.add(new RenderingHints(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE));
+				rh.add(new RenderingHints(RenderingHints.KEY_FRACTIONALMETRICS,
+						RenderingHints.VALUE_FRACTIONALMETRICS_ON));
+				rh.add(new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
+						RenderingHints.VALUE_TEXT_ANTIALIAS_OFF));
+
+				r.setRenderingHints(rh);
+
+				return r;
+			}
+		};
+
+		// set target size of png
+		transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, new Float(page.getHorizontalWidth() * scale));
+		transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, new Float(page.getVerticalWidth() * scale));
+
+		// Convert and Write output
+		transcoder.transcode(input_svg_image, output_png_image);
+		// Close / flush Output Stream
 		png_ostream.flush();
 		png_ostream.close();
 	}

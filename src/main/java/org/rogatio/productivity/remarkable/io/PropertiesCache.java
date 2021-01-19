@@ -69,6 +69,8 @@ public class PropertiesCache {
 	/** The svgb. */
 	private final String SVGB = "white";
 
+	private final String EXPORTSCALE = "1.8";
+
 	/** The svgg. */
 	private final String SVGG = "gray"; // #C7E1A8 //#263C0E
 
@@ -77,6 +79,8 @@ public class PropertiesCache {
 
 	/** The Constant VERSION. */
 	public static final String VERSION = "version";
+
+	public static final String PNGEXPORTSCALE = "png.export.scale";
 
 	/** The Constant DEVICETOKEN. */
 	public static final String DEVICETOKEN = "device.token";
@@ -127,6 +131,7 @@ public class PropertiesCache {
 			setProperty(SVGHIGHLIGHTCOLOR, SVGH);
 			setProperty(SVGBACKGROUNDCOLOR, SVGB);
 			setProperty(SVGGRIDCOLOR, SVGG);
+			setProperty(PNGEXPORTSCALE, EXPORTSCALE);
 			flush();
 			logger.error("Propertyfile '" + PROPERTYFILE + "' created");
 		} catch (FileNotFoundException e1) {
@@ -224,12 +229,10 @@ public class PropertiesCache {
 		return false;
 	}
 
-	/**
-	 * Gets the property.
-	 *
-	 * @param key the key
-	 * @return the property
-	 */
+	public Double getPropertyDouble(String key) {
+		return Double.parseDouble(configProp.getProperty(key));
+	}
+
 	public String getProperty(String key) {
 		return configProp.getProperty(key);
 	}

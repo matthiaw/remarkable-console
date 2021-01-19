@@ -53,12 +53,23 @@ public class Svg2Pdf {
 	 * @param notebook the notebook
 	 */
 	public static void merge(Notebook notebook) {
-		String name = EXPORTFOLDER + File.separatorChar + notebook.getName() + ".pdf";
+
+		String folders = "";
+		if (notebook.getFolders().size() > 0) {
+			for (String f : notebook.getFolders()) {
+				folders += f + File.separatorChar;
+			}
+			File ff = new File(EXPORTFOLDER + File.separatorChar + folders);
+			ff.mkdirs();
+		}
+
+		String name = EXPORTFOLDER  + File.separatorChar + folders+ notebook.getName() + ".pdf";
 		File pdffile = new File(name);
 		PDFMergerUtility pdf = new PDFMergerUtility();
 		pdf.setDestinationFileName(pdffile.getPath());
 		for (Page page : notebook.getPages()) {
 			String pdfFile = Util.getFilename(page, "pdf");
+			//logger.debug("Add pdf-page '"+pdfFile+"'");
 			try {
 				pdf.addSource(pdfFile);
 			} catch (FileNotFoundException e) {
@@ -66,9 +77,9 @@ public class Svg2Pdf {
 		}
 		try {
 			pdf.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly());
-			logger.info("Create '" + EXPORTFOLDER + File.separatorChar + notebook.getName() + ".pdf'");
+			logger.info("Merge '" + name + "'");
 		} catch (IOException e) {
-			logger.error("Error merging pdf for notebook '" + notebook.getName() + "'", e);
+			logger.error("Error merging '"+name+"' for notebook '" + notebook.getName() + "'", e);
 		}
 	}
 

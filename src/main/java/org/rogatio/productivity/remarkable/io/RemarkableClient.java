@@ -36,10 +36,10 @@ public class RemarkableClient extends RequestClient {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(RemarkableClient.class);
 
-	/** The device auth url. */
+	/** The device auth url, see https://akeil.de/posts/remarkable-cloud-api/ */
 	private final String DEVICE_AUTH_URL = "https://my.remarkable.com/token/json/2/device/new";
 	
-	/** The user auth url. */
+	/** The user auth url, see https://akeil.de/posts/remarkable-cloud-api/ */
 	private final String USER_AUTH_URL = "https://my.remarkable.com/token/json/2/user/new";
 	
 	/** The base url. */

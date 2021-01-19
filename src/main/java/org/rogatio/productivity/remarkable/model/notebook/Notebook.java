@@ -60,8 +60,18 @@ public class Notebook {
 		return name;
 	}
 
+	private List<String> folders;
+
 	/** The pages. */
 	private List<Page> pages = new ArrayList<Page>();
+
+	public List<String> getFolders() {
+		return folders;
+	}
+
+	public void setFolders(List<String> folders) {
+		this.folders = folders;
+	}
 
 	/**
 	 * Gets the template file.

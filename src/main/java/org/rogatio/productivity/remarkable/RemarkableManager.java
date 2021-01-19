@@ -22,6 +22,8 @@ import static org.rogatio.productivity.remarkable.io.PropertiesCache.DEVICETOKEN
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -67,7 +69,7 @@ public class RemarkableManager {
 
 		if (INSTANCE == null) {
 			boolean deviceTokenExists = PropertiesCache.getInstance().propertyExists(DEVICETOKEN);
-			
+
 			if (!deviceTokenExists) {
 				logger.error("Device token not set. Close remarkable console application.");
 				System.exit(0);
@@ -79,6 +81,8 @@ public class RemarkableManager {
 
 		return INSTANCE;
 	}
+
+	private MetaDataNotebook[] metadataNotebooks;
 
 	/**
 	 * Instantiates a new remarkable manager.
@@ -95,6 +99,8 @@ public class RemarkableManager {
 		} catch (IOException e) {
 			logger.error("Error creating user token", e);
 		}
+
+		metadataNotebooks = listMetaDataNotebooks();
 	}
 
 	/**
@@ -142,8 +148,7 @@ public class RemarkableManager {
 	 * @return the meta data notebook by name
 	 */
 	public MetaDataNotebook getMetaDataNotebookByName(String name) {
-		MetaDataNotebook[] docs = listMetaDataNotebooks();
-		for (MetaDataNotebook document : docs) {
+		for (MetaDataNotebook document : metadataNotebooks) {
 			if (document.vissibleName.equals(name)) {
 				return document;
 			}
@@ -178,12 +183,14 @@ public class RemarkableManager {
 	 *
 	 * @param notebookName the notebook name
 	 */
-	public void readNotebook(String notebookName) {
+	public void readNotebook(File file) {
 
 		ZipFile zf = null;
 
+		String notebookName = file.getName().replace(".zip", "");
+
 		try {
-			zf = new ZipFile(new File(DOCUMENT_STORAGE + File.separatorChar + notebookName + ".zip").getAbsolutePath());
+			zf = new ZipFile(file.getAbsolutePath());
 
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 
@@ -241,6 +248,9 @@ public class RemarkableManager {
 
 			}
 
+			List<String> parents = getParentFolders(notebookName);
+			rNotebook.setFolders(parents);
+
 			notebooks.put(notebookName, rNotebook);
 
 		} catch (IOException e) {
@@ -261,21 +271,11 @@ public class RemarkableManager {
 	 * Read notebooks from local storage to memory
 	 */
 	public void readNotebooks() {
-
-		MetaDataNotebook[] metas = listMetaDataNotebooks(true);
-
-		if (metas == null) {
-			logger.warn("No MetaData of Notebooks found");
-			return;
-		}
-
-		if (metas.length == 0) {
-			logger.warn("No MetaData of Notebooks found");
-			return;
-		}
-
-		for (MetaDataNotebook metaDataNotebook : metas) {
-			this.readNotebook(metaDataNotebook.vissibleName);
+		ArrayList<File> files = Util.listFiles(new File(DOCUMENT_STORAGE), "zip");
+		for (File file : files) {
+			if (!file.isDirectory()) {
+				this.readNotebook(file);
+			}
 		}
 	}
 
@@ -306,6 +306,7 @@ public class RemarkableManager {
 		for (MetaDataNotebook metaDataNotebook : metaDataNotebooks) {
 			downloadNotebook(metaDataNotebook);
 		}
+
 	}
 
 	/**
@@ -324,7 +325,18 @@ public class RemarkableManager {
 	 * @param document the document
 	 */
 	public void downloadNotebook(MetaDataNotebook document) {
-		File zip = new File(DOCUMENT_STORAGE + File.separatorChar + document.vissibleName + ".zip");
+
+		List<String> p = this.getParentFolders(document.vissibleName);
+		String folders = "";
+		if (p.size() > 0) {
+			for (String f : p) {
+				folders += f + File.separatorChar;
+			}
+			File ff = new File(folders);
+			ff.mkdirs();
+		}
+
+		File zip = new File(DOCUMENT_STORAGE + File.separatorChar + folders + document.vissibleName + ".zip");
 
 		if (!zip.exists()) {
 			zip.getParentFile().mkdirs();
@@ -341,6 +353,7 @@ public class RemarkableManager {
 	 */
 	public void downloadNotebook(MetaDataNotebook document, File file) {
 		logger.info("Save/Download document " + document.vissibleName + " to " + file.getName());
+
 		client.saveDocument(document, userToken, file);
 	}
 
@@ -372,7 +385,10 @@ public class RemarkableManager {
 	public void exportNotebook(String notebookName) {
 		Notebook nb = getNotebook(notebookName);
 		Util.createSvg(nb);
-		Util.createPng(nb);
+
+		double scale = PropertiesCache.getInstance().getPropertyDouble(PropertiesCache.PNGEXPORTSCALE);
+		Util.createPng(nb, scale);
+
 		Util.createPdf(nb);
 	}
 
@@ -384,11 +400,40 @@ public class RemarkableManager {
 	 */
 	public MetaDataNotebook[] listMetaDataNotebooks(boolean blobUrl) {
 		try {
-			return client.listMetaDataNotebooks(userToken, true);
+			return client.listMetaDataNotebooks(userToken, blobUrl);
 		} catch (IOException e) {
 			logger.error("Error getting meta-data notebooks", e);
 		}
 		return null;
+	}
+
+	public List<String> getParentFolders(String notebookName) {
+		List<String> folders = new ArrayList<String>();
+
+		MetaDataNotebook mData = this.getMetaDataNotebookByName(notebookName);
+
+		getParentFolders(mData, folders);
+
+		if (folders.size() >= 1) {
+			folders.remove(folders.size() - 1);
+		}
+
+		return folders;
+	}
+
+	private void getParentFolders(MetaDataNotebook item, List<String> list) {
+
+		list.add(0, item.vissibleName);
+
+		if (item.parent.length() > 0) {
+			MetaDataNotebook parent = this.getMetaDataNotebookByName(item.parent);
+			if (parent == null) {
+				parent = this.getMetaDataNotebookById(item.parent);
+			}
+
+			getParentFolders(parent, list);
+		}
+
 	}
 
 }

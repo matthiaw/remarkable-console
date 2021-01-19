@@ -19,8 +19,12 @@ package org.rogatio.productivity.remarkable.io.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.logging.log4j.LogManager;
@@ -51,18 +55,70 @@ public class Util {
 		return false;
 	}
 
-	/**
-	 * Gets the filename.
-	 *
-	 * @param page   the page
-	 * @param suffix the suffix
-	 * @return the filename
-	 */
-	public static String getFilename(Page page, String suffix) {
+	private static String createFolderStructure(Page page) {
+		String folders = "";
+		if (page.getNotebook().getFolders().size() > 0) {
+			for (String f : page.getNotebook().getFolders()) {
+				folders += f + File.separatorChar;
+			}
+			File ff = new File(EXPORTFOLDER + File.separatorChar +folders);
+			ff.mkdirs();
+		}
+		return folders;
+	}
+	
+	public static ArrayList<File> listFiles(File dir, String ending) {
+        if (null == dir || !dir.isDirectory()) {
+            return new ArrayList<>();
+        }
+        boolean recursive = true;
+        
+        final Set<File> fileTree = new HashSet<File>();
+        FileFilter fileFilter = new FileFilter() {
+            private final String[] acceptedExtensions = new String[]{ending};
+
+            @Override
+            public boolean accept(File file) {
+                if (file.isDirectory()) {
+                    return true;
+                }
+                for (String extension : acceptedExtensions) {
+                    if (file.getName().toLowerCase().endsWith(extension)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+        File[] listed = dir.listFiles(fileFilter);
+        if(listed!=null){
+            for (File entry : listed) {
+                if (entry.isFile()) {
+                    fileTree.add(entry);
+                } else if(recursive){
+                    fileTree.addAll(listFiles(entry, ending));
+                }
+            }
+        }
+        return new ArrayList<>(fileTree);
+    }
+	
+	public static String getFilename(Page page, String suffix, String ending) {
+
+		if (suffix == null) {
+			suffix = "";
+		}
+
+		String folders = createFolderStructure(page);
+
 		String no = String.format("%03d", page.getPageNumber());
-		String name = EXPORTFOLDER + File.separatorChar + page.getNotebook().getName() + File.separatorChar + "Page_"
-				+ no + "." + suffix;
+		String name = EXPORTFOLDER + File.separatorChar + folders + page.getNotebook().getName() + File.separatorChar
+				+ "Page_" + no + suffix + "." + ending;
 		return name;
+	}
+
+	public static String getFilename(Page page, String suffix) {
+		return getFilename(page, null, suffix);
 	}
 
 	/**
@@ -107,10 +163,11 @@ public class Util {
 	 *
 	 * @param notebook the notebook
 	 */
-	public static void createPng(Notebook notebook) {
+	public static void createPng(Notebook notebook, double scale) {
 		for (Page page : notebook.getPages()) {
 			try {
-				Svg2Png.createPng(page);
+				Svg2Png.createPng(page, scale);
+				Svg2Png.createThumbnail(page);
 			} catch (TranscoderException | IOException e) {
 				logger.error("Error creating png", e);
 			}
