@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
+import org.rogatio.productivity.remarkable.io.file.Util;
 
 /**
  * The Class Notebook.
@@ -36,6 +37,10 @@ public class Notebook {
 	/** The name. */
 	private String name;
 
+	private String type;
+
+	private int currentPage;
+
 	/** The template names. */
 	private List<String> templateNames = new ArrayList<>();
 
@@ -48,7 +53,14 @@ public class Notebook {
 	public Notebook(String id, String name) {
 		this.id = id;
 		this.name = name;
-//		this.notebook = notebook;
+	}
+
+	public int getCurrentPageNumber() {
+		return currentPage;
+	}
+
+	public void setCurrentPageNumber(int currentPage) {
+		this.currentPage = currentPage;
 	}
 
 	/**
@@ -60,7 +72,7 @@ public class Notebook {
 		return name;
 	}
 
-	private List<String> folders;
+	private List<String> folders = new ArrayList<String>();
 
 	/** The pages. */
 	private List<Page> pages = new ArrayList<Page>();
@@ -164,6 +176,22 @@ public class Notebook {
 	 */
 	public List<Page> getPages() {
 		return pages;
+	}
+
+	public String getCurrentPageFile() {
+		Page p = this.getPage(currentPage);
+		if (p == null) {
+			return null;
+		}
+		return Util.getFilename(p, "_thumbnail", "png");
+	}
+
+	public Type getType() {
+		return Type.get(type);
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

@@ -117,8 +117,8 @@ public class Util {
 		return name;
 	}
 
-	public static String getFilename(Page page, String suffix) {
-		return getFilename(page, null, suffix);
+	public static String getFilename(Page page, String ending) {
+		return getFilename(page, null, ending);
 	}
 
 	/**

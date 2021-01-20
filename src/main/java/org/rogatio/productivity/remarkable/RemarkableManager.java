@@ -260,8 +260,21 @@ public class RemarkableManager {
 
 			}
 
-			List<String> parents = getParentFolders(notebookName);
+			MetaDataNotebook metadataNotebook = getMetaDataNotebookById(notebookID);
+			rNotebook.setCurrentPageNumber(metadataNotebook.currentPage);
+			logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getCurrentPageNumber() + "");
+
+			String currentPageFile = rNotebook.getCurrentPageFile();
+			if (currentPageFile != null) {
+				logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getCurrentPageFile() + "");
+			}
+
+			rNotebook.setType(metadataNotebook.type);
+			logger.debug("Type of '" + rNotebook.getName() + "' is " + rNotebook.getType() + "");
+
+			List<String> parents = getParentFolders(notebookID);
 			rNotebook.setFolders(parents);
+			logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
 
 			notebooks.put(notebookName, rNotebook);
 
@@ -309,7 +322,6 @@ public class RemarkableManager {
 		for (MetaDataNotebook metaDataNotebook : metaDataNotebooks) {
 			downloadNotebook(metaDataNotebook);
 		}
-
 	}
 
 	/**
@@ -318,7 +330,6 @@ public class RemarkableManager {
 	 * @param document the document
 	 */
 	public void downloadNotebook(MetaDataNotebook document) {
-
 		List<String> p = this.getParentFolders(document.vissibleName);
 		String folders = "";
 		if (p.size() > 0) {
@@ -371,7 +382,7 @@ public class RemarkableManager {
 
 				try {
 					ObjectMapper mapper = new ObjectMapper();
-					metaDataNotebooks[i] = mapper.readValue(files.get(0), MetaDataNotebook.class);
+					metaDataNotebooks[i] = mapper.readValue(files.get(i), MetaDataNotebook.class);
 				} catch (JsonParseException e) {
 				} catch (JsonMappingException e) {
 				} catch (IOException e) {
@@ -432,10 +443,10 @@ public class RemarkableManager {
 		return null;
 	}
 
-	public List<String> getParentFolders(String notebookName) {
+	public List<String> getParentFolders(String notebookId) {
 		List<String> folders = new ArrayList<String>();
 
-		MetaDataNotebook mData = this.getMetaDataNotebookByName(notebookName);
+		MetaDataNotebook mData = this.getMetaDataNotebookById(notebookId);
 
 		getParentFolders(mData, folders);
 
