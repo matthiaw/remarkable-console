@@ -43,6 +43,11 @@ import org.rogatio.productivity.remarkable.model.notebook.Page;
 import org.rogatio.productivity.remarkable.model.web.MetaDataNotebook;
 import org.rogatio.productivity.remarkable.ssh.SshClient;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
  * console
@@ -100,7 +105,12 @@ public class RemarkableManager {
 			logger.error("Error creating user token", e);
 		}
 
-		metadataNotebooks = listMetaDataNotebooks();
+		metadataNotebooks = readNotebookMetaDatas();
+
+		if (metadataNotebooks.length == 0) {
+			metadataNotebooks = downloadMetaDataNotebooks();
+		}
+
 	}
 
 	/**
@@ -133,10 +143,10 @@ public class RemarkableManager {
 	 * @return the meta data notebook by id
 	 */
 	public MetaDataNotebook getMetaDataNotebookById(String id) {
-		try {
-			return client.getMetaDataNotebook(id, userToken);
-		} catch (IOException e) {
-			logger.error("error receiving meta-data for notebook " + id);
+		for (MetaDataNotebook document : metadataNotebooks) {
+			if (document.iD.equals(id)) {
+				return document;
+			}
 		}
 		return null;
 	}
@@ -148,9 +158,11 @@ public class RemarkableManager {
 	 * @return the meta data notebook by name
 	 */
 	public MetaDataNotebook getMetaDataNotebookByName(String name) {
-		for (MetaDataNotebook document : metadataNotebooks) {
-			if (document.vissibleName.equals(name)) {
-				return document;
+		if (metadataNotebooks != null) {
+			for (MetaDataNotebook document : metadataNotebooks) {
+				if (document.vissibleName.equals(name)) {
+					return document;
+				}
 			}
 		}
 		return null;
@@ -280,15 +292,6 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * List meta data notebooks.
-	 *
-	 * @return the meta data notebook[]
-	 */
-	public MetaDataNotebook[] listMetaDataNotebooks() {
-		return listMetaDataNotebooks(false);
-	}
-
-	/**
 	 * Download notebook from web to local
 	 *
 	 * @param notebookName the notebook name
@@ -302,21 +305,11 @@ public class RemarkableManager {
 	 * Download notebooks from web to local
 	 */
 	public void downloadNotebooks() {
-		MetaDataNotebook[] metaDataNotebooks = listMetaDataNotebooks(true);
+		MetaDataNotebook[] metaDataNotebooks = downloadMetaDataNotebooks(true);
 		for (MetaDataNotebook metaDataNotebook : metaDataNotebooks) {
 			downloadNotebook(metaDataNotebook);
 		}
 
-	}
-
-	/**
-	 * Download meta data notebook.
-	 *
-	 * @param nameOfNotebook the name of notebook
-	 */
-	public void downloadMetaDataNotebook(String nameOfNotebook) {
-		MetaDataNotebook mdn = getMetaDataNotebookByName(nameOfNotebook);
-		downloadNotebook(mdn);
 	}
 
 	/**
@@ -355,6 +348,7 @@ public class RemarkableManager {
 		logger.info("Save/Download document " + document.vissibleName + " to " + file.getName());
 
 		client.saveDocument(document, userToken, file);
+		saveMetaDataNotebook(document);
 	}
 
 	/**
@@ -366,6 +360,28 @@ public class RemarkableManager {
 	 */
 	public Page getPage(String notebookName, int pageNumber) {
 		return getNotebook(notebookName).getPage(pageNumber);
+	}
+
+	public MetaDataNotebook[] readNotebookMetaDatas() {
+		ArrayList<File> files = Util.listFiles(new File(DOCUMENT_STORAGE), "meta");
+
+		MetaDataNotebook[] metaDataNotebooks = new MetaDataNotebook[files.size()];
+		for (int i = 0; i < metaDataNotebooks.length; i++) {
+			if (!files.get(i).isDirectory()) {
+
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					metaDataNotebooks[i] = mapper.readValue(files.get(0), MetaDataNotebook.class);
+				} catch (JsonParseException e) {
+				} catch (JsonMappingException e) {
+				} catch (IOException e) {
+				}
+			}
+		}
+
+		logger.info("Read Notebook MetaData (" + metaDataNotebooks.length + " entries)");
+
+		return metaDataNotebooks;
 	}
 
 	/**
@@ -392,15 +408,24 @@ public class RemarkableManager {
 		Util.createPdf(nb);
 	}
 
-	/**
-	 * List meta data notebooks.
-	 *
-	 * @param blobUrl the blob url
-	 * @return the meta data notebook[]
-	 */
-	public MetaDataNotebook[] listMetaDataNotebooks(boolean blobUrl) {
+	public MetaDataNotebook[] downloadMetaDataNotebooks() {
+		return downloadMetaDataNotebooks(false);
+	}
+
+	public MetaDataNotebook[] downloadMetaDataNotebooks(boolean blobUrl) {
 		try {
-			return client.listMetaDataNotebooks(userToken, blobUrl);
+			MetaDataNotebook[] metadataNotebooks = client.listMetaDataNotebooks(userToken, blobUrl);
+
+			if (!blobUrl) {
+				for (MetaDataNotebook metaDataNotebook : metadataNotebooks) {
+					saveMetaDataNotebook(metaDataNotebook);
+				}
+				logger.info("Download Notebook MetaData (" + metadataNotebooks.length + " entries) with blob");
+			} else {
+				logger.info("Download Notebook MetaData (" + metadataNotebooks.length + " entries)");
+			}
+
+			return metadataNotebooks;
 		} catch (IOException e) {
 			logger.error("Error getting meta-data notebooks", e);
 		}
@@ -419,6 +444,32 @@ public class RemarkableManager {
 		}
 
 		return folders;
+	}
+
+	private void saveMetaDataNotebook(MetaDataNotebook meta) {
+
+		List<String> p = this.getParentFolders(meta.vissibleName);
+		String folders = "";
+		if (p.size() > 0) {
+			for (String f : p) {
+				folders += f + File.separatorChar;
+			}
+		}
+
+		File f = new File(DOCUMENT_STORAGE + File.separatorChar + folders + meta.vissibleName + ".meta");
+
+		if (!f.exists()) {
+			f.getParentFile().mkdirs();
+		}
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			objectMapper.writeValue(f, meta);
+		} catch (JsonGenerationException e) {
+		} catch (JsonMappingException e) {
+		} catch (IOException e) {
+		}
+
 	}
 
 	private void getParentFolders(MetaDataNotebook item, List<String> list) {

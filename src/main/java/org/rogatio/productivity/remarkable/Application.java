@@ -50,11 +50,8 @@ import picocli.shell.jline3.PicocliJLineCompleter;
  */
 public class Application {
 
-	//TODO Namensgleiche Notebooks differenzieren über FolderStruktur 
-	//TODO Darstellung Notebooks in WS
-	//TODO 
-	
-	
+	// TODO Darstellung Notebooks in WS
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Application.class);
 
