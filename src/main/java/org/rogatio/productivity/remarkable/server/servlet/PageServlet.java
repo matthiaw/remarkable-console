@@ -17,17 +17,17 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.*;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.notebook.Notebook;
+import org.rogatio.productivity.remarkable.model.notebook.Page;
 
-import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -37,8 +37,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * The Class HomeServlet.
  */
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/page")
+public class PageServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class HomeServlet extends HttpServlet {
 	/**
 	 * Instantiates a new home servlet.
 	 */
-	public HomeServlet() {
+	public PageServlet() {
 	}
 
 	/**
@@ -63,20 +63,19 @@ public class HomeServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
-		rm.readNotebooks();
-		List<Notebook> docs = rm.getDocuments();
+		Notebook nb = rm.getNotebookById(request.getParameter("notebook"));
+		Page p = nb.getPage(Integer.parseInt(request.getParameter("no")));
+		File svg = new File(Util.getFilename(p, "svg"));
 
-		render(response, head(title("Remarkable Console - Home")),
+		byte[] encoded = Files.readAllBytes(Paths.get(svg.toURI()));
+		String svgContent = new String(encoded, "UTF-8");
 
-				body(header(), main(each(docs, d ->
-
-				div(table(tbody(
-						tr(td(a(img().attr("border", "1").withSrc(Util.imgToBase64String(d.getThumbnail())))
-								.withHref("notebook?id=" + d.getId()))),
-						tr(td(d.getName())), tr(td(d.getPages().size() + " Seiten")))))
-								.withStyle("float: left;margin-right:10px")
-
-				)), footer()));
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		out.println("<html><head><title>"+"Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber()+"</title></head><body>");
+		//out.println("<style>svg {width: 100%; height: auto;}</style>");
+		out.println(svgContent);
+		out.println("</body></head>");
 
 	}
 
@@ -92,19 +91,6 @@ public class HomeServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-	}
-
-	/**
-	 * Render.
-	 *
-	 * @param response the response
-	 * @param dc       the dom content
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void render(HttpServletResponse response, DomContent... dc) throws IOException {
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.println(document(html(dc)));
 	}
 
 }

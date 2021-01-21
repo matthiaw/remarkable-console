@@ -22,6 +22,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.rogatio.productivity.remarkable.server.servlet.HomeServlet;
+import org.rogatio.productivity.remarkable.server.servlet.NotebookServlet;
+import org.rogatio.productivity.remarkable.server.servlet.PageServlet;
 
 /**
  * The Class EmbeddedServer.
@@ -44,6 +46,8 @@ public class EmbeddedServer {
 
 		ServletHandler servletHandler = new ServletHandler();
 		servletHandler.addServletWithMapping(HomeServlet.class, "/");
+		servletHandler.addServletWithMapping(NotebookServlet.class, "/notebook");
+		servletHandler.addServletWithMapping(PageServlet.class, "/page");
 		server.setHandler(servletHandler);
 
 		server.start();

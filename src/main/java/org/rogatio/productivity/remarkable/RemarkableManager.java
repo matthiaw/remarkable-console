@@ -194,13 +194,22 @@ public class RemarkableManager {
 		return files;
 	}
 
+	public Notebook getNotebookById(String id) {
+		for (Notebook n : notebooks) {
+			if (n.getId().equals(id)) {
+				return n;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Gets the first entry of notebook with same name
 	 *
 	 * @param name the name
 	 * @return the notebook
 	 */
-	public Notebook getNotebook(String name) {
+	public Notebook getNotebookByName(String name) {
 		for (Notebook n : notebooks) {
 			if (n.getName().equals(name)) {
 				return n;
@@ -283,9 +292,9 @@ public class RemarkableManager {
 			rNotebook.setCurrentPageNumber(metadataNotebook.currentPage);
 			logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getCurrentPageNumber() + "");
 
-			File currentPageFile = rNotebook.getCurrentPageFile();
+			File currentPageFile = rNotebook.getThumbnail();
 			if (currentPageFile != null) {
-				logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getCurrentPageFile() + "");
+				logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getThumbnail() + "");
 			}
 
 			rNotebook.setType(metadataNotebook.type);
@@ -295,8 +304,9 @@ public class RemarkableManager {
 			rNotebook.setFolders(parents);
 			logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
 
-			notebooks.add(rNotebook);
-
+			if (!notebooks.contains(rNotebook)) {
+				notebooks.add(rNotebook);
+			}
 		} catch (IOException e) {
 			// logger.error("Error extracting file "+fileWithPathInsideZip +" from
 			// "+zipFile.getName());
@@ -389,7 +399,7 @@ public class RemarkableManager {
 	 * @return the page
 	 */
 	public Page getPage(String notebookName, int pageNumber) {
-		return getNotebook(notebookName).getPage(pageNumber);
+		return getNotebookByName(notebookName).getPage(pageNumber);
 	}
 
 //	public MetaDataNotebook[] readNotebookMetaDatas() {

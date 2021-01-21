@@ -26,6 +26,7 @@ import java.util.List;
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.notebook.Notebook;
+import org.rogatio.productivity.remarkable.model.notebook.Page;
 
 import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
@@ -37,8 +38,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * The Class HomeServlet.
  */
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/notebook")
+public class NotebookServlet extends HttpServlet {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -46,7 +47,7 @@ public class HomeServlet extends HttpServlet {
 	/**
 	 * Instantiates a new home servlet.
 	 */
-	public HomeServlet() {
+	public NotebookServlet() {
 	}
 
 	/**
@@ -63,17 +64,17 @@ public class HomeServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
-		rm.readNotebooks();
-		List<Notebook> docs = rm.getDocuments();
+		Notebook nb = rm.getNotebookById(request.getParameter("id"));
+		
+		List<Page> pages = nb.getPages();
+		
+		render(response, head(title("Remarkable Console - Notebook '"+nb.getName()+"'")),
 
-		render(response, head(title("Remarkable Console - Home")),
-
-				body(header(), main(each(docs, d ->
+				body(header(), main(each(pages, p ->
 
 				div(table(tbody(
-						tr(td(a(img().attr("border", "1").withSrc(Util.imgToBase64String(d.getThumbnail())))
-								.withHref("notebook?id=" + d.getId()))),
-						tr(td(d.getName())), tr(td(d.getPages().size() + " Seiten")))))
+						tr(td(a(img().attr("border", "1").withSrc(Util.imgToBase64String(p.getThumbnail())))
+								.withHref("page?notebook="+nb.getId()+"&no=" + p.getPageNumber()))))))
 								.withStyle("float: left;margin-right:10px")
 
 				)), footer()));

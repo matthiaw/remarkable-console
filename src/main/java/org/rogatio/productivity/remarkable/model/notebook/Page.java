@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
+import org.rogatio.productivity.remarkable.io.file.Util;
 
 /**
  * The Class Page.
@@ -33,21 +36,23 @@ import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
  */
 public class Page {
 
+	protected static final Logger logger = LogManager.getLogger(Page.class);
+
 	/** The header. */
 	private final String HEADER = "reMarkable .lines file, version=X";
 
 	/** The page number. */
 	private int pageNumber;
-	
+
 	/** The horizontal width. */
 	private int horizontalWidth = 1404;
-	
+
 	/** The vertical width. */
 	private int verticalWidth = 1872;
-	
+
 	/** The version. */
 	private int version;
-	
+
 	/** The layers. */
 	private List<Layer> layers = new ArrayList<Layer>();
 
@@ -98,29 +103,29 @@ public class Page {
 	public File getTemplateFile() {
 		return SvGTemplateLoader.getInstance().getFile(getTemplateName());
 	}
-	
+
 	/**
 	 * Gets the template name.
 	 *
 	 * @return the template name
 	 */
 	public String getTemplateName() {
-		
-		String templateName = notebook.getTemplateNames().get(this.getPageNumber() );
-		if (templateName!=null) {
+
+		String templateName = notebook.getTemplateNames().get(this.getPageNumber());
+		if (templateName != null) {
 			if (!templateName.equals("")) {
 				return templateName;
 			}
 		}
-		
+
 		return notebook.getDefaultTemplate();
 	}
-	
+
 	/**
 	 * Cut bytes.
 	 *
-	 * @param start the start
-	 * @param end the end
+	 * @param start     the start
+	 * @param end       the end
 	 * @param byteArray the byte array
 	 * @return the byte[]
 	 */
@@ -170,11 +175,12 @@ public class Page {
 	/**
 	 * See https://remarkablewiki.com/tech/filesystem
 	 * 
-	 * An alternative for this parsing could be found at https://github.com/raydac/java-binary-block-parser/blob/master/jbbp/src/test/java/com/igormaznitsa/jbbp/it/RemarkableLinesParsingTest.java
+	 * An alternative for this parsing could be found at
+	 * https://github.com/raydac/java-binary-block-parser/blob/master/jbbp/src/test/java/com/igormaznitsa/jbbp/it/RemarkableLinesParsingTest.java
 	 *
 	 * @param pageNumber the page number
-	 * @param bytes the bytes
-	 * @param notebook the notebook
+	 * @param bytes      the bytes
+	 * @param notebook   the notebook
 	 */
 	@SuppressWarnings("unused")
 	public Page(int pageNumber, byte[] bytes, Notebook notebook) {
@@ -211,8 +217,8 @@ public class Page {
 					float strokeWidth = bb.getFloat();
 					float penPressure = bb.getFloat();
 
-					Segment segment = new Segment(segmentNo, horizontalAxis, vertikalAxis, penSpeed,
-							strokeDirection, strokeWidth, penPressure);
+					Segment segment = new Segment(segmentNo, horizontalAxis, vertikalAxis, penSpeed, strokeDirection,
+							strokeWidth, penPressure);
 					segments.add(segment);
 				}
 
@@ -263,6 +269,16 @@ public class Page {
 	public String toString() {
 		return "Page (Version=" + this.getVersion() + ", Number=" + pageNumber + ") [Layers (" + this.getLayers().size()
 				+ "): " + this.getLayers() + "]";
+	}
+
+	public File getThumbnail() {
+		String f = Util.getFilename(this, "_thumbnail", "png");
+		if (new File(f).exists()) {
+			return new File(f);
+		} else {
+			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+		}
+		return null;
 	}
 
 }
