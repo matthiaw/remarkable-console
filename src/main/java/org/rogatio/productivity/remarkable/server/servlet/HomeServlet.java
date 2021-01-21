@@ -18,9 +18,17 @@
 package org.rogatio.productivity.remarkable.server.servlet;
 
 import static j2html.TagCreator.*;
+import static org.rogatio.productivity.remarkable.io.file.Util.imgToBase64String;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.io.file.Util;
+import org.rogatio.productivity.remarkable.model.notebook.Notebook;
 
 import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
@@ -57,17 +65,20 @@ public class HomeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		RemarkableManager rm = RemarkableManager.getInstance();
+		rm.readNotebooks();
+		List<Notebook> docs = rm.getDocuments();
+
 		render(response, head(title("Remarkable Console - Home")),
 
-				body(
+				body(header(), main(each(docs, d ->
 
-						header(),
+				div(table(
+						tbody(tr(td(img().attr("border", "1").withSrc(Util.imgToBase64String(d.getCurrentPageFile())))),
+								tr(td(d.getName())), tr(td(d.getPages().size() + " Seiten"))))).attr("style",
+										"float: left;margin-right:10px")
 
-						main("Content of the remarkable. Not implemented yet."),
-
-						footer()
-
-				));
+				)), footer()));
 
 	}
 

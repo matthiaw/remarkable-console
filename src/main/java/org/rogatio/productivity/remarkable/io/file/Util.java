@@ -17,14 +17,21 @@
  */
 package org.rogatio.productivity.remarkable.io.file;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.logging.log4j.LogManager;
@@ -61,48 +68,48 @@ public class Util {
 			for (String f : page.getNotebook().getFolders()) {
 				folders += f + File.separatorChar;
 			}
-			File ff = new File(EXPORTFOLDER + File.separatorChar +folders);
+			File ff = new File(EXPORTFOLDER + File.separatorChar + folders);
 			ff.mkdirs();
 		}
 		return folders;
 	}
-	
-	public static ArrayList<File> listFiles(File dir, String ending) {
-        if (null == dir || !dir.isDirectory()) {
-            return new ArrayList<>();
-        }
-        boolean recursive = true;
-        
-        final Set<File> fileTree = new HashSet<File>();
-        FileFilter fileFilter = new FileFilter() {
-            private final String[] acceptedExtensions = new String[]{ending};
 
-            @Override
-            public boolean accept(File file) {
-                if (file.isDirectory()) {
-                    return true;
-                }
-                for (String extension : acceptedExtensions) {
-                    if (file.getName().toLowerCase().endsWith(extension)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-        File[] listed = dir.listFiles(fileFilter);
-        if(listed!=null){
-            for (File entry : listed) {
-                if (entry.isFile()) {
-                    fileTree.add(entry);
-                } else if(recursive){
-                    fileTree.addAll(listFiles(entry, ending));
-                }
-            }
-        }
-        return new ArrayList<>(fileTree);
-    }
-	
+	public static ArrayList<File> listFiles(File dir, String ending) {
+		if (null == dir || !dir.isDirectory()) {
+			return new ArrayList<>();
+		}
+		boolean recursive = true;
+
+		final Set<File> fileTree = new HashSet<File>();
+		FileFilter fileFilter = new FileFilter() {
+			private final String[] acceptedExtensions = new String[] { ending };
+
+			@Override
+			public boolean accept(File file) {
+				if (file.isDirectory()) {
+					return true;
+				}
+				for (String extension : acceptedExtensions) {
+					if (file.getName().toLowerCase().endsWith(extension)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+		File[] listed = dir.listFiles(fileFilter);
+		if (listed != null) {
+			for (File entry : listed) {
+				if (entry.isFile()) {
+					fileTree.add(entry);
+				} else if (recursive) {
+					fileTree.addAll(listFiles(entry, ending));
+				}
+			}
+		}
+		return new ArrayList<>(fileTree);
+	}
+
 	public static String getFilename(Page page, String suffix, String ending) {
 
 		if (suffix == null) {
@@ -183,6 +190,35 @@ public class Util {
 		for (Page page : notebook.getPages()) {
 			SvgDocument.create(page);
 			SvgMerger.merge(page, page.getTemplateName(), new File(getFilename(page, "svg")));
+		}
+	}
+
+	public static String imgToBase64String(File imgFile) {
+		BufferedImage image = null;
+		
+		if (imgFile==null) {
+			return "";
+		}
+		
+		try {
+			image = ImageIO.read(imgFile);
+		} catch (IOException e) {
+
+		}
+		
+		String ending = imgFile.getName().substring(imgFile.getName().indexOf(".")+1, imgFile.getName().length());
+
+		return imgToBase64String(image, ending);
+	}
+
+	public static String imgToBase64String(final RenderedImage img, final String formatName) {
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+		try {
+			ImageIO.write(img, formatName, os);
+			return "data:image/"+formatName.toLowerCase()+";base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+		} catch (final IOException ioe) {
+			throw new UncheckedIOException(ioe);
 		}
 	}
 

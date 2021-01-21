@@ -21,6 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
 import org.rogatio.productivity.remarkable.io.file.Util;
 
@@ -30,6 +33,8 @@ import org.rogatio.productivity.remarkable.io.file.Util;
  * @author Matthias Wegner
  */
 public class Notebook {
+
+	protected static final Logger logger = LogManager.getLogger(Notebook.class);
 
 	/** The id. */
 	private String id;
@@ -178,12 +183,18 @@ public class Notebook {
 		return pages;
 	}
 
-	public String getCurrentPageFile() {
+	public File getCurrentPageFile() {
 		Page p = this.getPage(currentPage);
 		if (p == null) {
 			return null;
 		}
-		return Util.getFilename(p, "_thumbnail", "png");
+		String f = Util.getFilename(p, "_thumbnail", "png");
+		if (new File(f).exists()) {
+			return new File(f);
+		} else {
+			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+		}
+		return null;
 	}
 
 	public Type getType() {
