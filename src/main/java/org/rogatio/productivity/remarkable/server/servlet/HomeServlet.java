@@ -17,17 +17,21 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.main;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.tbody;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.tr;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
-import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.content.Content;
 
-import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,16 +42,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * The Class HomeServlet.
  */
 @WebServlet("/home")
-public class HomeServlet extends HttpServlet {
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Instantiates a new home servlet.
-	 */
-	public HomeServlet() {
-	}
+public class HomeServlet extends BaseServlet {
+	private static final long serialVersionUID = -512109101238411127L;
 
 	/**
 	 * Do get.
@@ -66,45 +62,15 @@ public class HomeServlet extends HttpServlet {
 		rm.readContents();
 		List<Content> docs = rm.getNotebooks();
 
-		render(response, head(title("Remarkable Console - Home")),
+		setTitle("Remarkable Console - Home");
 
-				body(header(), main(each(docs, d ->
+		render(response, main(each(docs, d ->
 
-				div(table(tbody(
-						tr(td(a(img().attr("border", "1").withSrc(Util.imgToBase64String(d.getThumbnail())))
-								.withHref("notebook?id=" + d.getId()))),
-						tr(td(d.getName())), tr(td(d.getPages().size() + " Seiten")))))
-								.withStyle("float: left;margin-right:10px")
+		div(table(tbody(tr(td(image(d.getThumbnail(), "notebook?id=" + d.getId()))),
+				tr(td(attrs(".title"), d.getName())), tr(td(attrs(".pages"), d.getPages().size() + " Seiten")))))
 
-				)), footer()));
+		)));
 
-	}
-
-	/**
-	 * Do post.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @throws ServletException the servlet exception
-	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-	}
-
-	/**
-	 * Render.
-	 *
-	 * @param response the response
-	 * @param dc       the dom content
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void render(HttpServletResponse response, DomContent... dc) throws IOException {
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.println(document(html(dc)));
 	}
 
 }

@@ -141,6 +141,7 @@
 				<!-- <targetPath>${project.build.directory}</targetPath> -->
 				<includes>
 					<include>log4j2.xml</include>
+					<include>styles.css</include>
 				</includes>
 			</resource>
 		</resources>

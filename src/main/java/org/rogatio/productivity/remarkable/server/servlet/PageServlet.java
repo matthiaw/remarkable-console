@@ -17,9 +17,12 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.*;
+import static j2html.TagCreator.rawHtml;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -38,16 +41,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * The Class HomeServlet.
  */
 @WebServlet("/page")
-public class PageServlet extends HttpServlet {
+public class PageServlet extends BaseServlet {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Instantiates a new home servlet.
-	 */
-	public PageServlet() {
-	}
+	private static final long serialVersionUID = -5957420611509472672L;
 
 	/**
 	 * Do get.
@@ -65,31 +61,15 @@ public class PageServlet extends HttpServlet {
 		RemarkableManager rm = RemarkableManager.getInstance();
 		Content nb = rm.getContentById(request.getParameter("notebook"));
 		Page p = nb.getPage(Integer.parseInt(request.getParameter("no")));
-		File svg = new File(Util.getFilename(p, "svg"));
+		String svgPath = Util.getFilename(p, "svg");
 
-		byte[] encoded = Files.readAllBytes(Paths.get(svg.toURI()));
-		String svgContent = new String(encoded, "UTF-8");
+		// byte[] encoded = Files.readAllBytes(Paths.get(svg.toURI()));
+		// String svgContent = new String(encoded, "UTF-8");
 
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>"+"Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber()+"</title></head><body>");
-		out.println(svgContent);
-		out.println("</body></head>");
+		setTitle("Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber());
 
-	}
+		render(response, main(fileAsString(svgPath)));
 
-	/**
-	 * Do post.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @throws ServletException the servlet exception
-	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
 	}
 
 }

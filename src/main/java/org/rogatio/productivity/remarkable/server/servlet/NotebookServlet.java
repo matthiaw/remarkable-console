@@ -17,18 +17,21 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.main;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.tbody;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.tr;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
-import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.content.Page;
 
-import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,16 +42,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * The Class HomeServlet.
  */
 @WebServlet("/notebook")
-public class NotebookServlet extends HttpServlet {
+public class NotebookServlet extends BaseServlet {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Instantiates a new home servlet.
-	 */
-	public NotebookServlet() {
-	}
+	private static final long serialVersionUID = -8455645168122367344L;
 
 	/**
 	 * Do get.
@@ -65,47 +61,17 @@ public class NotebookServlet extends HttpServlet {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
 		Content nb = rm.getContentById(request.getParameter("id"));
-		
+
 		List<Page> pages = nb.getPages();
-		
-		render(response, head(title("Remarkable Console - Notebook '"+nb.getName()+"'")),//, styleWithInlineFile("")),),
 
-				body(header(), main(each(pages, p ->
+		setTitle("Remarkable Console - Notebook '" + nb.getName() + "'");
 
-				div(table(tbody(
-						tr(td(a(img().attr("border", "1").withSrc(Util.imgToBase64String(p.getThumbnail())))
-								.withHref("page?notebook="+nb.getId()+"&no=" + p.getPageNumber()))))))
-								.withStyle("float: left;margin-right:10px")
+		render(response, main(each(pages, p ->
 
-				)), footer()));
+		div(table(tbody(tr(td(image(p.getThumbnail(), "page?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))))))
 
-	}
+		)));
 
-	/**
-	 * Do post.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @throws ServletException the servlet exception
-	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-	}
-
-	/**
-	 * Render.
-	 *
-	 * @param response the response
-	 * @param dc       the dom content
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void render(HttpServletResponse response, DomContent... dc) throws IOException {
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.println(document(html(dc)));
 	}
 
 }
