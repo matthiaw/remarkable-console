@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package org.rogatio.productivity.remarkable.model.notebook;
+package org.rogatio.productivity.remarkable.model.content;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -168,10 +168,18 @@ public class Page {
 	 *
 	 * @return the notebook
 	 */
-	public Notebook getNotebook() {
+	public Content getNotebook() {
 		return notebook;
 	}
 
+	public Page(int pageNumber, byte[] bytes) {
+		this(pageNumber, bytes, null);
+	}
+	
+	public void setNotebook(Content notebook) {
+		this.notebook = notebook;
+	}
+	
 	/**
 	 * See https://remarkablewiki.com/tech/filesystem
 	 * 
@@ -183,7 +191,7 @@ public class Page {
 	 * @param notebook   the notebook
 	 */
 	@SuppressWarnings("unused")
-	public Page(int pageNumber, byte[] bytes, Notebook notebook) {
+	public Page(int pageNumber, byte[] bytes, Content notebook) {
 
 		this.notebook = notebook;
 		this.pageNumber = pageNumber;
@@ -241,7 +249,7 @@ public class Page {
 	}
 
 	/** The notebook. */
-	private Notebook notebook;
+	private Content notebook;
 
 	/**
 	 * Gets the version.

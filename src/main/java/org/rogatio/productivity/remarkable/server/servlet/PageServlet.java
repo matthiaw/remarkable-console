@@ -25,8 +25,8 @@ import java.nio.file.Paths;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
-import org.rogatio.productivity.remarkable.model.notebook.Notebook;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Content;
+import org.rogatio.productivity.remarkable.model.content.Page;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -63,7 +63,7 @@ public class PageServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
-		Notebook nb = rm.getNotebookById(request.getParameter("notebook"));
+		Content nb = rm.getContentById(request.getParameter("notebook"));
 		Page p = nb.getPage(Integer.parseInt(request.getParameter("no")));
 		File svg = new File(Util.getFilename(p, "svg"));
 
@@ -73,7 +73,6 @@ public class PageServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<html><head><title>"+"Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber()+"</title></head><body>");
-		//out.println("<style>svg {width: 100%; height: auto;}</style>");
 		out.println(svgContent);
 		out.println("</body></head>");
 

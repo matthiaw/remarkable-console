@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.server.EmbeddedServer;
+import org.rogatio.productivity.remarkable.terminal.Prompt;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -29,31 +31,31 @@ import picocli.CommandLine.ParentCommand;
 /**
  * The Class DownloadNotebooks.
  */
-@Command(name = "notebooks",description = "Handle Notebooks",  version = "1.0", mixinStandardHelpOptions = true)
-public class NotebooksCommand implements Callable {
+@Command(name = "server", description = "Manage embedded server", version = "1.0", mixinStandardHelpOptions = true)
+public class ServerCommand implements Callable {
+
+	private EmbeddedServer server = new EmbeddedServer();
 
 	@ParentCommand
 	private CommandlineCommands parent;
 
-	@Option(names = { "-d", "--download" }, description = "Download notebooks")
-	boolean download;
+	@Option(names = { "--start" }, description = "Start Server")
+	boolean start;
 
-	@Option(names = { "-r", "--read" }, description = "Read notebooks")
-	boolean read;
+	@Option(names = { "--stop" }, description = "Stop Server")
+	boolean stop;
 
-	@Option(names = { "-e", "--export" }, description = "Export notebooks")
-	boolean export;
-
-	
 	public Void call() throws IOException {
-		if (download) {
-			RemarkableManager.getInstance().downloadContents();
-		}
-		if (read) {
-			RemarkableManager.getInstance().readContents();
-		}
-		if (export) {
-			RemarkableManager.getInstance().exportNotebooks();
+		try {
+
+			if (start) {
+				server.start();
+				//System.out.println(Prompt.getPrefix(" "));
+			}
+			if (stop) {
+				server.stop();
+			}
+		} catch (Exception e) {
 		}
 		return null;
 	}

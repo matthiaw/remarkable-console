@@ -33,6 +33,10 @@ public class EmbeddedServer {
 	/** The server. */
 	private Server server;
 
+	public void stop() throws Exception {
+		server.stop();
+	}
+	
 	/**
 	 * Start the server
 	 *

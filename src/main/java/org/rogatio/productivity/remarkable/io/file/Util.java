@@ -24,21 +24,36 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
 import org.apache.batik.transcoder.TranscoderException;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
-import org.rogatio.productivity.remarkable.model.notebook.Notebook;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Content;
+import org.rogatio.productivity.remarkable.model.content.Page;
+import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
+
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 
 /**
  * The Class Util.
@@ -158,7 +173,7 @@ public class Util {
 	 *
 	 * @param notebook the notebook
 	 */
-	public static void createPdf(Notebook notebook) {
+	public static void createPdf(Content notebook) {
 		for (Page page : notebook.getPages()) {
 			Svg2Pdf.convert(page);
 		}
@@ -170,7 +185,7 @@ public class Util {
 	 *
 	 * @param notebook the notebook
 	 */
-	public static void createPng(Notebook notebook, double scale) {
+	public static void createPng(Content notebook, double scale) {
 		for (Page page : notebook.getPages()) {
 			try {
 				Svg2Png.createPng(page, scale);
@@ -186,27 +201,37 @@ public class Util {
 	 *
 	 * @param notebook the notebook
 	 */
-	public static void createSvg(Notebook notebook) {
+	public static void createSvg(Content notebook) {
 		for (Page page : notebook.getPages()) {
-			SvgDocument.create(page);
+			
+//			SvgDocument.createPortrait(page);
+//			SvgDocument.createLandscape(page);
+			
+			String orientation = page.getNotebook().getContentData().getOrientation();
+			if (orientation.equals("portrait")) {
+				SvgDocument.createPortrait(page);
+			} else {
+				SvgDocument.createLandscape(page);
+			}
+			
 			SvgMerger.merge(page, page.getTemplateName(), new File(getFilename(page, "svg")));
 		}
 	}
 
 	public static String imgToBase64String(File imgFile) {
 		BufferedImage image = null;
-		
-		if (imgFile==null) {
+
+		if (imgFile == null) {
 			return "";
 		}
-		
+
 		try {
 			image = ImageIO.read(imgFile);
 		} catch (IOException e) {
 
 		}
-		
-		String ending = imgFile.getName().substring(imgFile.getName().indexOf(".")+1, imgFile.getName().length());
+
+		String ending = imgFile.getName().substring(imgFile.getName().indexOf(".") + 1, imgFile.getName().length());
 
 		return imgToBase64String(image, ending);
 	}
@@ -216,10 +241,70 @@ public class Util {
 
 		try {
 			ImageIO.write(img, formatName, os);
-			return "data:image/"+formatName.toLowerCase()+";base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+			return "data:image/" + formatName.toLowerCase() + ";base64,"
+					+ Base64.getEncoder().encodeToString(os.toByteArray());
 		} catch (final IOException ioe) {
 			throw new UncheckedIOException(ioe);
 		}
+	}
+
+	public static void addMetaToZip(ContentMetaData document, File zip) {
+		try {
+			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zip);
+
+			File fileToZip = File.createTempFile(document.iD + "-", ".meta");
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+			objectMapper.writeValue(fileToZip, document);
+
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+
+			zipFile.addFile(fileToZip, parameters);
+		} catch (ZipException e) {
+		} catch (IOException e) {
+		} catch (net.lingala.zip4j.exception.ZipException e) {
+		}
+	}
+
+	public static String getFileContent(File zipFile, String ending) {
+		ZipFile zf = null;
+		try {
+			zf = new ZipFile(zipFile);
+
+			Enumeration<? extends ZipEntry> entries = zf.entries();
+
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+
+				if (entry.getName().endsWith("." + ending)) {
+				//	System.out.println(entry.getName());
+					InputStream inputStream = zf.getInputStream(entry);
+//					StringWriter writer = new StringWriter();
+//					IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8.name());
+				
+					//System.out.println("!!"+writer.toString());
+					return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+				}
+			}
+
+		} catch (ZipException e) {
+		e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (zf != null) {
+				try {
+					zf.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
 	}
 
 }

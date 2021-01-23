@@ -35,7 +35,7 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Page;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

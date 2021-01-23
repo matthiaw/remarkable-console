@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package org.rogatio.productivity.remarkable.model.notebook;
+package org.rogatio.productivity.remarkable.model.content;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,15 +26,16 @@ import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
 import org.rogatio.productivity.remarkable.io.file.Util;
+import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 
 /**
  * The Class Notebook.
  * 
  * @author Matthias Wegner
  */
-public class Notebook {
+public class Content {
 
-	protected static final Logger logger = LogManager.getLogger(Notebook.class);
+	protected static final Logger logger = LogManager.getLogger(Content.class);
 
 	/** The id. */
 	private String id;
@@ -49,13 +50,24 @@ public class Notebook {
 	/** The template names. */
 	private List<String> templateNames = new ArrayList<>();
 
+	private ContentMetaData metaData;
+
+	private ContentData contentData;
+
+	public Content(ContentMetaData metaData) {
+		this.id = metaData.iD;
+		this.name = metaData.vissibleName;
+		setCurrentPageNumber(metaData.currentPage);
+		this.metaData = metaData;
+	}
+
 	/**
 	 * Instantiates a new notebook.
 	 *
 	 * @param id   the id
 	 * @param name the name
 	 */
-	public Notebook(String id, String name) {
+	public Content(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -88,6 +100,22 @@ public class Notebook {
 
 	public void setFolders(List<String> folders) {
 		this.folders = folders;
+	}
+
+	public ContentMetaData getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(ContentMetaData metaData) {
+		this.metaData = metaData;
+	}
+
+	public ContentData getContentData() {
+		return contentData;
+	}
+
+	public void setContentData(ContentData contentData) {
+		this.contentData = contentData;
 	}
 
 	/**
@@ -162,7 +190,16 @@ public class Notebook {
 	 * @param page the page
 	 */
 	public void add(Page page) {
+		page.setNotebook(this);
 		pages.add(page);
+	}
+
+	public void setPages(List<Page> pages) {
+		this.pages = pages;
+
+		for (Page page : pages) {
+			page.setNotebook(this);
+		}
 	}
 
 	/**
@@ -186,7 +223,10 @@ public class Notebook {
 	public File getThumbnail() {
 		Page p = this.getPage(currentPage);
 		if (p == null) {
-			return null;
+			p = this.getPage(0);
+			if (p == null) {
+				return null;
+			}
 		}
 		String f = Util.getFilename(p, "_thumbnail", "png");
 		if (new File(f).exists()) {
@@ -221,7 +261,7 @@ public class Notebook {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Notebook other = (Notebook) obj;
+		Content other = (Content) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
-import org.rogatio.productivity.remarkable.model.notebook.Notebook;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Content;
+import org.rogatio.productivity.remarkable.model.content.Page;
 
 import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
@@ -64,11 +64,11 @@ public class NotebookServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
-		Notebook nb = rm.getNotebookById(request.getParameter("id"));
+		Content nb = rm.getContentById(request.getParameter("id"));
 		
 		List<Page> pages = nb.getPages();
 		
-		render(response, head(title("Remarkable Console - Notebook '"+nb.getName()+"'")),
+		render(response, head(title("Remarkable Console - Notebook '"+nb.getName()+"'")),//, styleWithInlineFile("")),),
 
 				body(header(), main(each(pages, p ->
 

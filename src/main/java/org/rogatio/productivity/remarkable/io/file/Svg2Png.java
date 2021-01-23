@@ -30,7 +30,7 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Page;
 
 /**
  * The Class Svg2Png.
@@ -63,8 +63,14 @@ public class Svg2Png {
 
 		String svg = Util.getFilename(page, "svg");
 
+		String orientation = page.getNotebook().getContentData().getOrientation();
+
 		if (!Util.fileExists(svg)) {
-			SvgDocument.create(page);
+			if (orientation.equals("portrait")) {
+				SvgDocument.createPortrait(page);
+			} else {
+				SvgDocument.createLandscape(page);
+			}
 		}
 
 		String png = Util.getFilename(page, suffix, "png");
@@ -108,8 +114,14 @@ public class Svg2Png {
 		};
 
 		// set target size of png
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, new Float(page.getHorizontalWidth() * scale));
-		transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, new Float(page.getVerticalWidth() * scale));
+
+		if (orientation.equals("portrait")) {
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, new Float(page.getHorizontalWidth() * scale));
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, new Float(page.getVerticalWidth() * scale));
+		} else {
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, new Float(page.getVerticalWidth() * scale));
+			transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, new Float(page.getHorizontalWidth() * scale));
+		}
 
 		// Convert and Write output
 		transcoder.transcode(input_svg_image, output_png_image);

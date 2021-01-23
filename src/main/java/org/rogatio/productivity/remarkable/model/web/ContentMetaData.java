@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Matthias Wegner
  */
-public class MetaDataNotebook extends BaseObject {
+public class ContentMetaData extends BaseObject {
 
 	/** The i D. */
 	@JsonProperty("ID")

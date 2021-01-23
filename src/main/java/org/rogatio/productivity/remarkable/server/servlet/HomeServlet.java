@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
-import org.rogatio.productivity.remarkable.model.notebook.Notebook;
+import org.rogatio.productivity.remarkable.model.content.Content;
 
 import j2html.tags.DomContent;
 import jakarta.servlet.ServletException;
@@ -63,8 +63,8 @@ public class HomeServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
-		rm.readNotebooks();
-		List<Notebook> docs = rm.getDocuments();
+		rm.readContents();
+		List<Content> docs = rm.getNotebooks();
 
 		render(response, head(title("Remarkable Console - Home")),
 

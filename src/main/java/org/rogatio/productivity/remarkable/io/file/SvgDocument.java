@@ -29,12 +29,12 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.productivity.remarkable.model.notebook.Layer;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
-import org.rogatio.productivity.remarkable.model.notebook.PencilType;
-import org.rogatio.productivity.remarkable.model.notebook.Segment;
-import org.rogatio.productivity.remarkable.model.notebook.Stroke;
-import org.rogatio.productivity.remarkable.model.notebook.StrokeColor;
+import org.rogatio.productivity.remarkable.model.content.Layer;
+import org.rogatio.productivity.remarkable.model.content.Page;
+import org.rogatio.productivity.remarkable.model.content.PencilType;
+import org.rogatio.productivity.remarkable.model.content.Segment;
+import org.rogatio.productivity.remarkable.model.content.Stroke;
+import org.rogatio.productivity.remarkable.model.content.StrokeColor;
 
 /**
  * The Class SvgDocument.
@@ -49,7 +49,7 @@ public class SvgDocument {
 	 *
 	 * @param page the page
 	 */
-	public static void create(Page page) {
+	public static void createPortrait(Page page) {
 		String name = Util.getFilename(page, "svg");
 
 		logger.info("Create '" + name + "'");
@@ -57,7 +57,18 @@ public class SvgDocument {
 		File exportDir = new File(name);
 		exportDir.getParentFile().mkdirs();
 
-		create(page, name);
+		createPortrait(page, name);
+	}
+
+	public static void createLandscape(Page page) {
+		String name = Util.getFilename(page, "svg");
+
+		logger.info("Create '" + name + "'");
+
+		File exportDir = new File(name);
+		exportDir.getParentFile().mkdirs();
+
+		createLandscape(page, name);
 	}
 
 	/**
@@ -116,6 +127,47 @@ public class SvgDocument {
 		}
 	}
 
+	public static void createLandscape(Page page, String fileName) {
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+
+			writer.write(format(
+					"<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"100%%\" width=\"100%%\" viewBox=\"0 0 %d %d\">",
+					page.getVerticalWidth(), page.getHorizontalWidth()));
+
+			int delta = - Math.abs((page.getVerticalWidth() - page.getHorizontalWidth()) / 2);
+
+			writer.write(
+					format("<g id=\"%s\" style=\"display:inline\" transform=\"rotate(90 %d %d) translate(%d %d)\">",
+							UUID.randomUUID().toString(), page.getHorizontalWidth() / 2, page.getVerticalWidth() / 2,
+							delta, delta));
+
+			// Set highlighterStrokes beneath all other penStrokes
+			for (Layer layer : page.getLayers()) {
+				for (Stroke stroke : layer.getStrokes()) {
+					addStroke(writer, stroke, PencilType.HIGHLIGHTER);
+				}
+			}
+
+			// Set all other penStrokes
+			for (Layer layer : page.getLayers()) {
+				for (Stroke stroke : layer.getStrokes()) {
+					if (stroke.getPencilType() != PencilType.HIGHLIGHTER) {
+						addStroke(writer, stroke, stroke.getPencilType());
+					}
+				}
+			}
+
+			writer.write(format("<rect x=\"0\" y=\"0\" width=\"%d\" height=\"%d\" fill-opacity=\"0\"/>",
+					page.getHorizontalWidth(), page.getVerticalWidth()));
+			writer.write("</g>");
+			writer.write("</svg>");
+
+			writer.close();
+		} catch (IOException e) {
+		}
+	}
+
 	/**
 	 * See https://github.com/reHackable/maxio/blob/master/tools/rM2svg
 	 * 
@@ -124,13 +176,14 @@ public class SvgDocument {
 	 * @param page     the page
 	 * @param fileName the file name
 	 */
-	public static void create(Page page, String fileName) {
+	public static void createPortrait(Page page, String fileName) {
 
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
 
-			writer.write(format("<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"%d\" width=\"%d\">",
-					page.getVerticalWidth(), page.getHorizontalWidth()));
+			writer.write(format(
+					"<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"100%%\" width=\"100%%\" viewBox=\"0 0 %d %d\">",
+					page.getHorizontalWidth(), page.getVerticalWidth()));
 
 			writer.write(format("<g id=\"%s\" style=\"display:inline\">", UUID.randomUUID().toString()));
 

@@ -23,8 +23,9 @@ import java.util.Map;
 import picocli.CommandLine;
 
 /**
- * The Class TerminalCommander.
+ * The Class TerminalCommander. Not used anymore.
  */
+@Deprecated
 public class TerminalCommander {
 
 	/** The commands. */

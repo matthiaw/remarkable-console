@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package org.rogatio.productivity.remarkable.model.notebook;
+package org.rogatio.productivity.remarkable.model.content;
 
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 

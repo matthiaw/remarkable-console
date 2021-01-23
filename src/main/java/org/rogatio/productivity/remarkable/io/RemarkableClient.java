@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.web.RequestClient;
 import org.rogatio.productivity.remarkable.model.web.Credentials;
-import org.rogatio.productivity.remarkable.model.web.MetaDataNotebook;
+import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -103,12 +103,12 @@ public class RemarkableClient extends RequestClient {
 	 * @return the meta data notebook
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public MetaDataNotebook getMetaDataNotebook(String docId, String userToken) throws IOException {
+	public ContentMetaData getMetaDataNotebook(String docId, String userToken) throws IOException {
 		logger.info("Receiving notebook meta-data for "+docId);
 		
 		String json = get(LIST_DOCS + "?withBlob=true&doc=" + docId, PREFIXAUTHTOKEN + " " + userToken);
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(json, MetaDataNotebook[].class)[0];
+		return mapper.readValue(json, ContentMetaData[].class)[0];
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class RemarkableClient extends RequestClient {
 	 * @return the meta data notebook[]
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public MetaDataNotebook[] listMetaDataNotebooks(String userToken) throws IOException {
+	public ContentMetaData[] listMetaDataNotebooks(String userToken) throws IOException {
 		return listMetaDataNotebooks(userToken, false);
 	}
 	
@@ -129,7 +129,7 @@ public class RemarkableClient extends RequestClient {
 	 * @param userToken the user token
 	 * @param file the file
 	 */
-	public void saveDocument(MetaDataNotebook document, String userToken, File file) {
+	public void saveDocument(ContentMetaData document, String userToken, File file) {
 		getStream(document.blobURLGet, userToken, file);
 	}
 
@@ -141,7 +141,7 @@ public class RemarkableClient extends RequestClient {
 	 * @return the meta data notebook[]
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public MetaDataNotebook[] listMetaDataNotebooks(String userToken, boolean withBlob) throws IOException {
+	public ContentMetaData[] listMetaDataNotebooks(String userToken, boolean withBlob) throws IOException {
 
 		String url = LIST_DOCS;
 		if (withBlob) {
@@ -153,7 +153,7 @@ public class RemarkableClient extends RequestClient {
 
 		String json = get(url, PREFIXAUTHTOKEN + " " + userToken);
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(json, MetaDataNotebook[].class);
+		return mapper.readValue(json, ContentMetaData[].class);
 	}
 
 }

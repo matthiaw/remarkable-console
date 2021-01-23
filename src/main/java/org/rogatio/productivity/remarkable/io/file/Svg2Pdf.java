@@ -33,8 +33,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
-import org.rogatio.productivity.remarkable.model.notebook.Notebook;
-import org.rogatio.productivity.remarkable.model.notebook.Page;
+import org.rogatio.productivity.remarkable.model.content.Content;
+import org.rogatio.productivity.remarkable.model.content.Page;
 
 /**
  * The Class Svg2Pdf.
@@ -52,7 +52,7 @@ public class Svg2Pdf {
 	 *
 	 * @param notebook the notebook
 	 */
-	public static void merge(Notebook notebook) {
+	public static void merge(Content notebook) {
 
 		String folders = "";
 		if (notebook.getFolders().size() > 0) {
