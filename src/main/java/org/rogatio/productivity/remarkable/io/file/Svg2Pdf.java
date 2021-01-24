@@ -95,7 +95,6 @@ public class Svg2Pdf {
 
 		try {
 			PDFTranscoder transcoder = new PDFTranscoder();
-			// Transcoder transcoder = new PDFTranscoder();
 			TranscoderInput transcoderInput = new TranscoderInput(new FileInputStream(new File(svgFile)));
 			TranscoderOutput transcoderOutput = new TranscoderOutput(new FileOutputStream(new File(pdfFile)));
 

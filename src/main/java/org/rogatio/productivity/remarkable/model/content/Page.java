@@ -175,11 +175,11 @@ public class Page {
 	public Page(int pageNumber, byte[] bytes) {
 		this(pageNumber, bytes, null);
 	}
-	
+
 	public void setNotebook(Content notebook) {
 		this.notebook = notebook;
 	}
-	
+
 	/**
 	 * See https://remarkablewiki.com/tech/filesystem
 	 * 
@@ -287,6 +287,34 @@ public class Page {
 			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
 		}
 		return null;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((layers == null) ? 0 : layers.hashCode());
+		result = prime * result + version;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Page other = (Page) obj;
+		if (layers == null) {
+			if (other.layers != null)
+				return false;
+		} else if (!layers.equals(other.layers))
+			return false;
+		if (version != other.version)
+			return false;
+		return true;
 	}
 
 }

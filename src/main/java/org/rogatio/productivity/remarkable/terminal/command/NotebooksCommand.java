@@ -35,6 +35,9 @@ public class NotebooksCommand implements Callable {
 	@ParentCommand
 	private CommandlineCommands parent;
 
+	@Option(names = { "-u", "--update" }, description = "Update notebooks")
+	boolean update;
+
 	@Option(names = { "-d", "--download" }, description = "Download notebooks")
 	boolean download;
 
@@ -46,6 +49,9 @@ public class NotebooksCommand implements Callable {
 
 	
 	public Void call() throws IOException {
+		if (update) {
+			RemarkableManager.getInstance().updateContents();
+		}
 		if (download) {
 			RemarkableManager.getInstance().downloadContents();
 		}

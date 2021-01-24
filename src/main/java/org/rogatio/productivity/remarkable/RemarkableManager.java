@@ -49,10 +49,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
- * console
- * 
+ * console.
+ *
  * @author Matthias Wegner
  */
 public class RemarkableManager {
@@ -60,17 +61,23 @@ public class RemarkableManager {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(RemarkableManager.class);
 
-	/** The storage folder of the notebooks */
+	/**  The storage folder of the notebooks. */
 	private final String DOCUMENT_STORAGE = PropertiesCache.getInstance().getProperty(PropertiesCache.NOTEBOOKFOLDER);
 
-	/** The remarkable client to the remarkable web application */
+	/**  The remarkable client to the remarkable web application. */
 	private RemarkableClient client;
 
-	/** The user token for the session */
+	/**  The user token for the session. */
 	private String userToken;
 
+	/** The instance. */
 	private static RemarkableManager INSTANCE;
 
+	/**
+	 * Gets the single instance of RemarkableManager.
+	 *
+	 * @return single instance of RemarkableManager
+	 */
 	public static RemarkableManager getInstance() {
 
 		if (INSTANCE == null) {
@@ -88,6 +95,7 @@ public class RemarkableManager {
 		return INSTANCE;
 	}
 
+	/** The metadata notebooks. */
 	private ContentMetaData[] metadataNotebooks;
 
 	/**
@@ -117,7 +125,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Download svg background templates through ssh connection
+	 * Download svg background templates through ssh connection.
 	 */
 	public void downloadTemplates() {
 		// get ssh-properties
@@ -183,6 +191,11 @@ public class RemarkableManager {
 		return contents;// new ArrayList<>(notebooks.values());
 	}
 
+	/**
+	 * Gets the folders.
+	 *
+	 * @return the folders
+	 */
 	public List<Content> getFolders() {
 		List<Content> files = new ArrayList<Content>();
 
@@ -195,6 +208,11 @@ public class RemarkableManager {
 		return files;
 	}
 
+	/**
+	 * Gets the notebooks.
+	 *
+	 * @return the notebooks
+	 */
 	public List<Content> getNotebooks() {
 		List<Content> files = new ArrayList<Content>();
 
@@ -208,6 +226,12 @@ public class RemarkableManager {
 		return files;
 	}
 
+	/**
+	 * Gets the content by id.
+	 *
+	 * @param id the id
+	 * @return the content by id
+	 */
 	public Content getContentById(String id) {
 		for (Content n : contents) {
 			if (n.getId().equals(id)) {
@@ -218,7 +242,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Gets the first entry of notebook with same name
+	 * Gets the first entry of notebook with same name.
 	 *
 	 * @param name the name
 	 * @return the notebook
@@ -337,11 +361,16 @@ public class RemarkableManager {
 //		return null;
 //	}
 
-	public void readContent(File file) {
+	/**
+ * Read content.
+ *
+ * @param file the file
+ */
+public void readContent(File file) {
 
 		String contentJson = Util.getFileContent(file, "content");
 		ContentData contentData = new ContentData(contentJson);
-		
+
 		ZipFile zf = null;
 
 		String notebookName = file.getName().replace(".zip", "");
@@ -406,11 +435,12 @@ public class RemarkableManager {
 			}
 
 			rNotebook.setContentData(contentData);
-			logger.debug("Notebook '"+rNotebook.getName() +"' has orientation '"+rNotebook.getContentData().getOrientation()+"'");
-			
+			logger.debug("Notebook '" + rNotebook.getName() + "' has orientation '"
+					+ rNotebook.getContentData().getOrientation() + "'");
+
 			ContentMetaData metadataNotebook = getMetaDataById(notebookID);
 			rNotebook.setMetaData(metadataNotebook);
-			
+
 			rNotebook.setCurrentPageNumber(metadataNotebook.currentPage);
 			logger.debug("Current page of '" + rNotebook.getName() + "' is " + rNotebook.getCurrentPageNumber() + "");
 
@@ -444,7 +474,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Read notebooks from local storage to memory
+	 * Read notebooks from local storage to memory.
 	 */
 	public void readContents() {
 		ArrayList<File> files = Util.listFiles(new File(DOCUMENT_STORAGE), "zip");
@@ -456,7 +486,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Download notebook from web to local
+	 * Download notebook from web to local.
 	 *
 	 * @param notebookName the notebook name
 	 */
@@ -466,7 +496,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Download notebooks from web to local
+	 * Download notebooks from web to local.
 	 */
 	public void downloadContents() {
 		ContentMetaData[] metaDataNotebooks = downloadMetaDatas(true);
@@ -502,7 +532,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Download notebook from web to local
+	 * Download notebook from web to local.
 	 *
 	 * @param document the document
 	 * @param file     the file
@@ -514,7 +544,7 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Gets the page object
+	 * Gets the page object.
 	 *
 	 * @param notebookName the notebook name
 	 * @param pageNumber   the page number
@@ -524,6 +554,11 @@ public class RemarkableManager {
 		return getContentByName(notebookName).getPage(pageNumber);
 	}
 
+	/**
+	 * Read notebook meta datas.
+	 *
+	 * @return the content meta data[]
+	 */
 	public ContentMetaData[] readNotebookMetaDatas() {
 		ArrayList<File> files = Util.listFiles(new File(DOCUMENT_STORAGE), "meta");
 
@@ -556,9 +591,9 @@ public class RemarkableManager {
 	}
 
 	/**
-	 * Export notebook to SVG, PNG, PDF into export folder
+	 * Export notebook to SVG, PNG, PDF into export folder.
 	 *
-	 * @param notebookName the notebook name
+	 * @param notebook the notebook
 	 */
 	public void exportNotebook(Content notebook) {
 		Util.createSvg(notebook);
@@ -569,10 +604,102 @@ public class RemarkableManager {
 		Util.createPdf(notebook);
 	}
 
+	/**
+	 * Update contents.
+	 */
+	public void updateContents() {
+		boolean repositoryOutdated = isOutdated();
+
+		if (repositoryOutdated) {
+			this.downloadContents();
+			this.readContents();
+			this.exportNotebooks();
+			logger.info("Update all contents");
+		} else {
+			for (ContentMetaData meta : this.metadataNotebooks) {
+				if (isOutdated(meta)) {
+					this.downloadContent(meta);
+					this.readContents();
+					Content content = getContentById(meta.iD);
+					this.exportNotebook(content);
+					logger.info("Update content '" + meta.vissibleName + "'");
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Checks if is outdated.
+	 *
+	 * @param meta the meta
+	 * @return true, if is outdated
+	 */
+	public boolean isOutdated(ContentMetaData meta) {
+		try {
+			ContentMetaData newData = client.getMetaDataNotebook(meta.iD, userToken);
+			if (meta.version != newData.version) {
+				logger.debug("Document '" + meta.vissibleName + "' is outdated (version=" + meta.version + " -> "
+						+ newData.version + ")");
+				return true;
+			}
+		} catch (IOException e) {
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if is outdated.
+	 *
+	 * @return true, if is outdated
+	 */
+	public boolean isOutdated() {
+		ContentMetaData[] oldContentMetaDatas = readNotebookMetaDatas();
+
+		ContentMetaData[] newContentMetaDatas = downloadMetaDatas();
+
+		if (oldContentMetaDatas.length != newContentMetaDatas.length) {
+			return true;
+		}
+
+//		for (int i = 0; i < oldContentMetaDatas.length; i++) {
+//			ContentMetaData oldData = oldContentMetaDatas[i];
+//
+////			boolean status = isOutdated(oldData);
+////			if (status==true) {
+////				return true;
+////			}
+//			for (int j = 0; j < newContentMetaDatas.length; j++) {
+//				ContentMetaData newData = newContentMetaDatas[j];
+//
+//				if (oldData.iD.equals(newData.iD)) {
+//					if (oldData.version != newData.version) {
+//						logger.debug("Document '" + oldData.vissibleName + "' is outdated (version=" + oldData.version
+//								+ " -> " + newData.version + ")");
+//						return true;
+//					}
+//				}
+//			}
+//		}
+
+		return false;
+	}
+
+	/**
+	 * Download meta datas.
+	 *
+	 * @return the content meta data[]
+	 */
 	public ContentMetaData[] downloadMetaDatas() {
 		return downloadMetaDatas(false);
 	}
 
+	/**
+	 * Download meta datas.
+	 *
+	 * @param blobUrl the blob url
+	 * @return the content meta data[]
+	 */
 	public ContentMetaData[] downloadMetaDatas(boolean blobUrl) {
 		try {
 			ContentMetaData[] metadataNotebooks = client.listMetaDataNotebooks(userToken, blobUrl);
@@ -593,6 +720,12 @@ public class RemarkableManager {
 		return null;
 	}
 
+	/**
+	 * Gets the parent folders.
+	 *
+	 * @param notebookId the notebook id
+	 * @return the parent folders
+	 */
 	public List<String> getParentFolders(String notebookId) {
 		List<String> folders = new ArrayList<String>();
 
@@ -607,6 +740,11 @@ public class RemarkableManager {
 		return folders;
 	}
 
+	/**
+	 * Save meta data notebook.
+	 *
+	 * @param meta the meta
+	 */
 	private void saveMetaDataNotebook(ContentMetaData meta) {
 
 		List<String> p = this.getParentFolders(meta.iD);
@@ -635,6 +773,13 @@ public class RemarkableManager {
 
 	}
 
+	/**
+	 * Gets the parent folders.
+	 *
+	 * @param item the item
+	 * @param list the list
+	 * @return the parent folders
+	 */
 	private void getParentFolders(ContentMetaData item, List<String> list) {
 
 		if (item == null) {

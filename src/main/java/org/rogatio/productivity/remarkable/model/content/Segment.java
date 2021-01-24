@@ -24,38 +24,38 @@ public class Segment {
 
 	/** The segment number. */
 	int segmentNumber;
-	
+
 	/** The horizontal axis. */
 	float horizontalAxis;
-	
+
 	/** The vertikal axis. */
 	float vertikalAxis;
-	
+
 	/** The pen speed. */
 	float penSpeed;
-	
+
 	/** The stroke direction. */
 	float strokeDirection;
-	
+
 	/** The stroke width. */
 	float strokeWidth;
-	
+
 	/** The pen pressure. */
 	float penPressure;
 
 	/**
 	 * Instantiates a new segment.
 	 *
-	 * @param segmentNumber the segment number
-	 * @param horizontalAxis the horizontal axis
-	 * @param vertikalAxis the vertikal axis
-	 * @param penSpeed the pen speed
+	 * @param segmentNumber   the segment number
+	 * @param horizontalAxis  the horizontal axis
+	 * @param vertikalAxis    the vertikal axis
+	 * @param penSpeed        the pen speed
 	 * @param strokeDirection the stroke direction
-	 * @param strokeWidth the stroke width
-	 * @param penPressure the pen pressure
+	 * @param strokeWidth     the stroke width
+	 * @param penPressure     the pen pressure
 	 */
-	public Segment(int segmentNumber, float horizontalAxis, float vertikalAxis, float penSpeed,
-			float strokeDirection, float strokeWidth, float penPressure) {
+	public Segment(int segmentNumber, float horizontalAxis, float vertikalAxis, float penSpeed, float strokeDirection,
+			float strokeWidth, float penPressure) {
 		this.segmentNumber = segmentNumber;
 		this.horizontalAxis = horizontalAxis;
 		this.vertikalAxis = vertikalAxis;
@@ -126,6 +126,46 @@ public class Segment {
 	 */
 	public float getPenPressure() {
 		return penPressure;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(horizontalAxis);
+		result = prime * result + Float.floatToIntBits(penPressure);
+		result = prime * result + Float.floatToIntBits(penSpeed);
+		result = prime * result + segmentNumber;
+		result = prime * result + Float.floatToIntBits(strokeDirection);
+		result = prime * result + Float.floatToIntBits(strokeWidth);
+		result = prime * result + Float.floatToIntBits(vertikalAxis);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Segment other = (Segment) obj;
+		if (Float.floatToIntBits(horizontalAxis) != Float.floatToIntBits(other.horizontalAxis))
+			return false;
+		if (Float.floatToIntBits(penPressure) != Float.floatToIntBits(other.penPressure))
+			return false;
+		if (Float.floatToIntBits(penSpeed) != Float.floatToIntBits(other.penSpeed))
+			return false;
+		if (segmentNumber != other.segmentNumber)
+			return false;
+		if (Float.floatToIntBits(strokeDirection) != Float.floatToIntBits(other.strokeDirection))
+			return false;
+		if (Float.floatToIntBits(strokeWidth) != Float.floatToIntBits(other.strokeWidth))
+			return false;
+		if (Float.floatToIntBits(vertikalAxis) != Float.floatToIntBits(other.vertikalAxis))
+			return false;
+		return true;
 	}
 
 }

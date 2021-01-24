@@ -44,13 +44,12 @@ public class Stroke {
 	 * Instantiates a new stroke.
 	 *
 	 * @param strokeNumber the stroke number
-	 * @param pencilType the pencil type
-	 * @param strokeColor the stroke color
-	 * @param penwidth the penwidth
-	 * @param segments the segments
+	 * @param pencilType   the pencil type
+	 * @param strokeColor  the stroke color
+	 * @param penwidth     the penwidth
+	 * @param segments     the segments
 	 */
-	public Stroke(int strokeNumber, int pencilType, int strokeColor, float penwidth,
-			List<Segment> segments) {
+	public Stroke(int strokeNumber, int pencilType, int strokeColor, float penwidth, List<Segment> segments) {
 		this.strokeNumber = strokeNumber;
 		this.pencilType = pencilType;
 		this.strokeColor = strokeColor;
@@ -110,6 +109,31 @@ public class Stroke {
 	 */
 	public List<Segment> getSegments() {
 		return segments;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((segments == null) ? 0 : segments.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Stroke other = (Stroke) obj;
+		if (segments == null) {
+			if (other.segments != null)
+				return false;
+		} else if (!segments.equals(other.segments))
+			return false;
+		return true;
 	}
 
 }

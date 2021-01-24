@@ -250,6 +250,7 @@ public class Content {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((pages == null) ? 0 : pages.hashCode());
 		return result;
 	}
 
@@ -267,7 +268,31 @@ public class Content {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (pages == null) {
+			if (other.pages != null)
+				return false;
+		} else if (!pages.equals(other.pages))
+			return false;
 		return true;
 	}
+	
+	
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		Content other = (Content) obj;
+//		if (id == null) {
+//			if (other.id != null)
+//				return false;
+//		} else if (!id.equals(other.id))
+//			return false;
+//		return true;
+//	}
 
 }

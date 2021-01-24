@@ -73,7 +73,35 @@ public class Layer {
 	 * @return the string
 	 */
 	public String toString() {
-		return "Layer [no="+this.getLayerNumber()+", Strokes ("+getStrokes().size()+")]";
+		return "Layer [no=" + this.getLayerNumber() + ", Strokes (" + getStrokes().size() + ")]";
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + layerNumber;
+		result = prime * result + ((strokes == null) ? 0 : strokes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Layer other = (Layer) obj;
+		if (layerNumber != other.layerNumber)
+			return false;
+		if (strokes == null) {
+			if (other.strokes != null)
+				return false;
+		} else if (!strokes.equals(other.strokes))
+			return false;
+		return true;
+	}
+
 }
