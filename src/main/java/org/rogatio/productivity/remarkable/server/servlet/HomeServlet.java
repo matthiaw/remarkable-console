@@ -17,6 +17,7 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
+import static j2html.TagCreator.a;
 import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
@@ -67,7 +68,8 @@ public class HomeServlet extends BaseServlet {
 		render(response, main(each(docs, d ->
 
 		div(table(tbody(tr(td(image(d.getThumbnail(), "notebook?id=" + d.getId()))),
-				tr(td(attrs(".title"), d.getName())), tr(td(attrs(".pages"), d.getPages().size() + " Seiten")))))
+				tr(td(attrs(".title"), d.getName())), tr(td(attrs(".pages"), d.getPages().size() + " Seiten"),
+						tr(td(attrs(".downloads"), a("PDF").withHref("download?type=pdf&notebook=" + d.getId())))))))
 
 		)));
 

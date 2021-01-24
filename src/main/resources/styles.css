@@ -12,9 +12,24 @@ img {
 }
 
 .title {
+	text-align: center;
 	font-weight: bold;
 }
 
 .pages {
+	text-align: center;
 	font-size: small;
+}
+
+.downloads {
+	text-align: center;
+	font-size: small;
+}
+
+svg {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
 }

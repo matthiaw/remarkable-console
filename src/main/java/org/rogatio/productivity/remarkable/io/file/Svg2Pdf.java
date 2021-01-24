@@ -69,7 +69,6 @@ public class Svg2Pdf {
 		pdf.setDestinationFileName(pdffile.getPath());
 		for (Page page : notebook.getPages()) {
 			String pdfFile = Util.getFilename(page, "pdf");
-			//logger.debug("Add pdf-page '"+pdfFile+"'");
 			try {
 				pdf.addSource(pdfFile);
 			} catch (FileNotFoundException e) {

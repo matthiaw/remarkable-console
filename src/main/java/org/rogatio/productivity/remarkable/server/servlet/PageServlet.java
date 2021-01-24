@@ -17,14 +17,10 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.div;
-import static j2html.TagCreator.*;
-import static j2html.TagCreator.rawHtml;
+import static j2html.TagCreator.fileAsString;
+import static j2html.TagCreator.main;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.Util;
@@ -63,12 +59,36 @@ public class PageServlet extends BaseServlet {
 		Page p = nb.getPage(Integer.parseInt(request.getParameter("no")));
 		String svgPath = Util.getFilename(p, "svg");
 
-		// byte[] encoded = Files.readAllBytes(Paths.get(svg.toURI()));
-		// String svgContent = new String(encoded, "UTF-8");
-
 		setTitle("Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber());
 
 		render(response, main(fileAsString(svgPath)));
+
+//				script("var svg = document.querySelector('svg');\r\n"
+//				+ "\r\n"
+//				+ "var svgWidth = parseFloat(svg.getAttributeNS(null, \"width\"));\r\n"
+//				+ "var svgHeight = parseFloat(svg.getAttributeNS(null, \"height\"));\r\n"
+//				+ "\r\n"
+//				+ "function scaleSVG(percent)\r\n"
+//				+ "{\r\n"
+//				+ "	svg.setAttributeNS(null, \"width\", svgWidth * percent);\r\n"
+//				+ "	svg.setAttributeNS(null, \"height\", svgHeight * percent);\r\n"
+//				+ "	svg.setAttributeNS(null, \"viewBox\", \"0 0 \" + svgWidth + \" \" + svgHeight);\r\n"
+//				+ "	\r\n"
+//				+ "}\r\n"
+//				+ "\r\n"
+//				+ "var inputs = document.querySelectorAll('input');\r\n"
+//				+ "\r\n"
+//				+ "var inputPercent = inputs[0];\r\n"
+//				+ "\r\n"
+//				+ "inputPercent.oninput = event =>\r\n"
+//				+ "{\r\n"
+//				+ "	var percent = parseFloat(event.target.value);\r\n"
+//				+ "	\r\n"
+//				+ "	scaleSVG( percent)\r\n"
+//				+ "};"),div(attrs("#panel"), span(attrs(".label"), text("percent:")), input()
+//						.attr("type", "number").attr("min", "0.1").attr("max", "2.0")
+//						.attr("step", "0.1")
+//						.attr("value", "1")),
 
 	}
 

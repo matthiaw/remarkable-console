@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import org.rogatio.productivity.remarkable.io.file.Util;
 
 import j2html.tags.ContainerTag;
+import j2html.tags.EmptyTag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,13 +29,18 @@ public class BaseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected static ContainerTag style;
+//	protected static EmptyTag pdfIcon;
 
 	private String title = "";
 
 	static {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		
 		File styleFile = new File(classLoader.getResource("styles.css").getFile());
 		style = styleWithInlineFile(styleFile.getAbsolutePath());
+		
+//		File pdfIconFile = new File(classLoader.getResource("pdf_256.png").getFile());
+//		pdfIcon = img().withSrc(pdfIconFile.getAbsolutePath());
 	}
 
 	protected void render(HttpServletResponse response, ContainerTag ct) throws IOException {

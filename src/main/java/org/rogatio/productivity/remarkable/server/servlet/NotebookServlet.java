@@ -17,12 +17,15 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
+import static j2html.TagCreator.a;
+import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.main;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.tbody;
 import static j2html.TagCreator.td;
+import static j2html.TagCreator.text;
 import static j2html.TagCreator.tr;
 
 import java.io.IOException;
@@ -68,7 +71,15 @@ public class NotebookServlet extends BaseServlet {
 
 		render(response, main(each(pages, p ->
 
-		div(table(tbody(tr(td(image(p.getThumbnail(), "page?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))))))
+		div(table(tbody(tr(td(image(p.getThumbnail(), "page?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))),
+				tr(td(attrs(".downloads"),
+						a("SVG").withHref("download?type=svg&notebook=" + nb.getId() + "&no=" + p.getPageNumber()),
+						text(" "),
+						a("PNG").withHref("download?type=png&notebook=" + nb.getId() + "&no=" + p.getPageNumber()),
+						text(" "),
+						a("PDF").withHref("download?type=pdf&notebook=" + nb.getId() + "&no=" + p.getPageNumber())
+
+				)))))
 
 		)));
 
