@@ -101,8 +101,8 @@ public class TerminalAppender extends AbstractAppender {
 			color = TerminalColor.BLUE_BOLD_BRIGHT;
 		}
 
-		System.out.println(color + "[" + event.getLevel().name() + "] " + TerminalColor.RESET
-				+ event.getMessage().getFormattedMessage());
+		System.out.print(color + "[" + event.getLevel().name() + "] " + TerminalColor.RESET
+				+ event.getMessage().getFormattedMessage()+"\n"+Prompt.getPrefix(" "));
 
 	}
 }

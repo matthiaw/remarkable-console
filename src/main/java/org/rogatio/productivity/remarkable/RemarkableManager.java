@@ -61,13 +61,13 @@ public class RemarkableManager {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(RemarkableManager.class);
 
-	/**  The storage folder of the notebooks. */
+	/** The storage folder of the notebooks. */
 	private final String DOCUMENT_STORAGE = PropertiesCache.getInstance().getProperty(PropertiesCache.NOTEBOOKFOLDER);
 
-	/**  The remarkable client to the remarkable web application. */
+	/** The remarkable client to the remarkable web application. */
 	private RemarkableClient client;
 
-	/**  The user token for the session. */
+	/** The user token for the session. */
 	private String userToken;
 
 	/** The instance. */
@@ -362,11 +362,11 @@ public class RemarkableManager {
 //	}
 
 	/**
- * Read content.
- *
- * @param file the file
- */
-public void readContent(File file) {
+	 * Read content.
+	 *
+	 * @param file the file
+	 */
+	public void readContent(File file) {
 
 		String contentJson = Util.getFileContent(file, "content");
 		ContentData contentData = new ContentData(contentJson);
@@ -456,9 +456,7 @@ public void readContent(File file) {
 			rNotebook.setFolders(parents);
 			logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
 
-			if (!contents.contains(rNotebook)) {
-				contents.add(rNotebook);
-			}
+			addContent(rNotebook);
 		} catch (IOException e) {
 			// logger.error("Error extracting file "+fileWithPathInsideZip +" from
 			// "+zipFile.getName());
@@ -471,6 +469,25 @@ public void readContent(File file) {
 			}
 		}
 
+	}
+
+	public void removeContent(Content content) {
+		Content contentToRemove = null;
+		for (Content c : contents) {
+			if (c.getId().equals(content.getId())) {
+				contentToRemove = c;
+			}
+		}
+		if (contentToRemove != null) {
+			contents.remove(contentToRemove);
+		}
+	}
+
+	public void addContent(Content content) {
+		removeContent(content);
+		if (!contents.contains(content)) {
+			contents.add(content);
+		}
 	}
 
 	/**

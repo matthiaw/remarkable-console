@@ -46,6 +46,7 @@ public class ServerCommand implements Callable {
 	boolean stop;
 
 	public Void call() throws IOException {
+		//System.out.print(Prompt.getPrefix(" "));
 		try {
 
 			if (start) {
@@ -57,6 +58,8 @@ public class ServerCommand implements Callable {
 			}
 		} catch (Exception e) {
 		}
+		
+		//System.out.println(Prompt.getPrefix(" "));
 		return null;
 	}
 

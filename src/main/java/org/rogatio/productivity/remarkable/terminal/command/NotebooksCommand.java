@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.terminal.Prompt;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -49,6 +50,7 @@ public class NotebooksCommand implements Callable {
 
 	
 	public Void call() throws IOException {
+		//System.out.print(Prompt.getPrefix(" "));
 		if (update) {
 			RemarkableManager.getInstance().updateContents();
 		}
@@ -61,6 +63,7 @@ public class NotebooksCommand implements Callable {
 		if (export) {
 			RemarkableManager.getInstance().exportNotebooks();
 		}
+		//System.out.println(Prompt.getPrefix(" "));
 		return null;
 	}
 

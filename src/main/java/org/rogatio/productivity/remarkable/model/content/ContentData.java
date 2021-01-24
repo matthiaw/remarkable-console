@@ -19,6 +19,10 @@ public class ContentData {
 		// System.out.println(contentJson.trim().length());
 		// System.out.println(contentJson);
 
+		if (contentJson==null) {
+			return;
+		}
+		
 		if (contentJson.length() > 5) {
 
 			JSONObject contentData = new JSONObject(contentJson);
