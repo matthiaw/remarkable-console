@@ -49,9 +49,7 @@ import picocli.shell.jline3.PicocliJLineCompleter;
  * The Class Application.
  */
 public class Application {
-
-	// TODO Darstellung Notebooks in WS
-
+	
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Application.class);
 

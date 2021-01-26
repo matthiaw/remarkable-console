@@ -65,6 +65,8 @@ public class PropertiesCache {
 
 	/** The svgh. */
 	private final String SVGH = "#76b72a";
+	
+	private final String PORT = "8090";
 
 	/** The svgb. */
 	private final String SVGB = "white";
@@ -114,6 +116,8 @@ public class PropertiesCache {
 
 	/** The Constant SSHPSWD. */
 	public static final String SSHPSWD = "ssh.password";
+	
+	public static final String SERVERPORT = "server.port";
 
 	/**
 	 * Creates the.
@@ -132,6 +136,7 @@ public class PropertiesCache {
 			setProperty(SVGBACKGROUNDCOLOR, SVGB);
 			setProperty(SVGGRIDCOLOR, SVGG);
 			setProperty(PNGEXPORTSCALE, EXPORTSCALE);
+			setProperty(SERVERPORT, PORT);
 			flush();
 			logger.error("Propertyfile '" + PROPERTYFILE + "' created");
 		} catch (FileNotFoundException e1) {
@@ -231,6 +236,10 @@ public class PropertiesCache {
 
 	public Double getPropertyDouble(String key) {
 		return Double.parseDouble(configProp.getProperty(key));
+	}
+	
+	public Integer getPropertyInt(String key) {
+		return Integer.parseInt(configProp.getProperty(key));
 	}
 
 	public String getProperty(String key) {

@@ -23,40 +23,46 @@ package org.rogatio.productivity.remarkable.model.content;
 public enum PencilType {
 
 	/** The ballpointpen. */
-	BALLPOINTPEN(15, "Ballpoint pen", 1.0), /** The calligrapgypen. */
- CALLIGRAPGYPEN(21, "Calligraphy pen", 1.0),
-	
+	BALLPOINTPEN(15, "Ballpoint pen", 1.0),
+
+	/** The calligrapgypen. */
+	CALLIGRAPGYPEN(21, "Calligraphy pen", 1.0),
+
 	/** The highlighter. */
-	HIGHLIGHTER(18, "Highlighter", 0.2), 
- /** The paintbrush. */
- PAINTBRUSH(12, "Paintbrush", 1.0),
-	
+	HIGHLIGHTER(18, "Highlighter", 0.2),
+
+	/** The paintbrush. */
+	PAINTBRUSH(12, "Paintbrush", 1.0),
+
 	/** The mechanicalpencil. */
-	MECHANICALPENCIL(13, "Mechanical pencil", 1.0), 
- /** The pencil. */
- PENCIL(14, "Pencil", 1.0), 
- /** The marker. */
- MARKER(16, "Marker", 0.9),
-	
+	MECHANICALPENCIL(13, "Mechanical pencil", 1.0),
+
+	/** The pencil. */
+	PENCIL(14, "Pencil", 1.0),
+
+	/** The marker. */
+	MARKER(16, "Marker", 0.9),
+
 	/** The fineline. */
-	FINELINE(17, "Fineliner", 1.0), 
- /** The eraser. */
- ERASER(6, "Eraser", 0.0);
+	FINELINE(17, "Fineliner", 1.0),
+
+	/** The eraser. */
+	ERASER(6, "Eraser", 0.0);
 
 	/** The type. */
 	private final int type;
-	
+
 	/** The name. */
 	private final String name;
-	
+
 	/** The opacity. */
 	private final double opacity;
 
 	/**
 	 * Instantiates a new pencil type.
 	 *
-	 * @param type the type
-	 * @param name the name
+	 * @param type    the type
+	 * @param name    the name
 	 * @param opacity the opacity
 	 */
 	private PencilType(int type, String name, double opacity) {

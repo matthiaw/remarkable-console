@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
-import org.rogatio.productivity.remarkable.terminal.Prompt;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -48,19 +47,21 @@ public class NotebooksCommand implements Callable {
 	@Option(names = { "-e", "--export" }, description = "Export notebooks")
 	boolean export;
 
+	@Option(names = { "-f", "--full" }, description = "Download, Read and Export notebooks")
+	boolean full;
 	
 	public Void call() throws IOException {
 		//System.out.print(Prompt.getPrefix(" "));
 		if (update) {
 			RemarkableManager.getInstance().updateContents();
 		}
-		if (download) {
+		if (download||full) {
 			RemarkableManager.getInstance().downloadContents();
 		}
-		if (read) {
+		if (read||full) {
 			RemarkableManager.getInstance().readContents();
 		}
-		if (export) {
+		if (export||full) {
 			RemarkableManager.getInstance().exportNotebooks();
 		}
 		//System.out.println(Prompt.getPrefix(" "));

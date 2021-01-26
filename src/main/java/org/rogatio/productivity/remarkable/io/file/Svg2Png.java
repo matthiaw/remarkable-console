@@ -95,7 +95,7 @@ public class Svg2Png {
 				rh.add(new RenderingHints(RenderingHints.KEY_ALPHA_INTERPOLATION,
 						RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY));
 				rh.add(new RenderingHints(RenderingHints.KEY_INTERPOLATION,
-						RenderingHints.VALUE_INTERPOLATION_BILINEAR));
+						RenderingHints.VALUE_INTERPOLATION_BICUBIC));
 				rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 				rh.add(new RenderingHints(RenderingHints.KEY_COLOR_RENDERING,
 						RenderingHints.VALUE_COLOR_RENDER_QUALITY));

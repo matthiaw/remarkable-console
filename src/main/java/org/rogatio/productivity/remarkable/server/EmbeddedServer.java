@@ -21,6 +21,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.server.servlet.DownloadPageServlet;
 import org.rogatio.productivity.remarkable.server.servlet.HomeServlet;
 import org.rogatio.productivity.remarkable.server.servlet.NotebookServlet;
@@ -34,19 +35,27 @@ public class EmbeddedServer {
 	/** The server. */
 	private Server server;
 
+	/**
+	 * Stop.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void stop() throws Exception {
 		server.stop();
 	}
 	
 	/**
-	 * Start the server
+	 * Start the server.
 	 *
 	 * @throws Exception the exception
 	 */
 	public void start() throws Exception {
 		server = new Server();
 		ServerConnector connector = new ServerConnector(server);
-		connector.setPort(8090);
+		
+		int port = PropertiesCache.getInstance().getPropertyInt(PropertiesCache.SERVERPORT);
+		connector.setPort(port);
+		
 		server.setConnectors(new Connector[] { connector });
 
 		ServletHandler servletHandler = new ServletHandler();
@@ -57,6 +66,14 @@ public class EmbeddedServer {
 		server.setHandler(servletHandler);
 
 		server.start();
+	}
+	
+	/**
+	 * Join server thread
+	 *
+	 * @throws InterruptedException the interrupted exception
+	 */
+	public void join() throws InterruptedException {
 		server.join();
 	}
 

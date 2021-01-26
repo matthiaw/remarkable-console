@@ -31,8 +31,6 @@ import java.util.zip.ZipFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.io.RemarkableClient;
 import org.rogatio.productivity.remarkable.io.file.Util;
@@ -49,7 +47,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
  * console.

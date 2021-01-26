@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -35,8 +34,6 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.content.Page;
-
-import com.sun.media.jai.opimage.FileLoadRIF;
 
 /**
  * The Class Svg2Pdf.
@@ -65,12 +62,13 @@ public class Svg2Pdf {
 			ff.mkdirs();
 		}
 
-		String name = EXPORTFOLDER + File.separatorChar + folders + notebook.getName() + ".pdf";
+		String name = EXPORTFOLDER + File.separatorChar + folders + notebook.getName() + "_HD.pdf";
+		logger.debug("Convert SVG to PDF: " + name);
 		File pdffile = new File(name);
 		PDFMergerUtility pdf = new PDFMergerUtility();
 		pdf.setDestinationFileName(pdffile.getPath());
 		for (Page page : notebook.getPages()) {
-			String pdfFile = Util.getFilename(page, "pdf");
+			String pdfFile = Util.getFilename(page, "_HD", "pdf");
 			try {
 				pdf.addSource(pdfFile);
 			} catch (FileNotFoundException e) {
@@ -91,7 +89,9 @@ public class Svg2Pdf {
 	 */
 	public static void convert(Page page) {
 		String svgFile = Util.getFilename(page, "svg");
-		String pdfFile = Util.getFilename(page, "pdf");
+		String pdfFile = Util.getFilename(page, "_HD", "pdf");
+
+		logger.debug("Convert SVG to PDF: " + pdfFile);
 
 		try {
 			PDFTranscoder transcoder = new PDFTranscoder();
@@ -104,11 +104,11 @@ public class Svg2Pdf {
 			String orientation = page.getNotebook().getContentData().getOrientation();
 
 			if (orientation.equals("portrait")) {
-				transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, page.getHorizontalWidth()/dpi);
-				transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, page.getVerticalWidth()/dpi);
+				transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, page.getHorizontalWidth() / dpi);
+				transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, page.getVerticalWidth() / dpi);
 			} else {
-				transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, page.getVerticalWidth()/dpi);
-				transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, page.getHorizontalWidth()/dpi);
+				transcoder.addTranscodingHint(PDFTranscoder.KEY_WIDTH, page.getVerticalWidth() / dpi);
+				transcoder.addTranscodingHint(PDFTranscoder.KEY_HEIGHT, page.getHorizontalWidth() / dpi);
 			}
 
 			transcoder.transcode(transcoderInput, transcoderOutput);

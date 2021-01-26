@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.itextpdf.text.DocumentException;
 
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
@@ -176,8 +178,20 @@ public class Util {
 	public static void createPdf(Content notebook) {
 		for (Page page : notebook.getPages()) {
 			Svg2Pdf.convert(page);
+			try {
+				Png2Pdf.convert(page);
+			} catch (MalformedURLException e) {
+			} catch (DocumentException e) {
+			} catch (IOException e) {
+			}
 		}
 		Svg2Pdf.merge(notebook);
+		try {
+			Png2Pdf.merge(notebook);
+		} catch (MalformedURLException e) {
+		} catch (DocumentException e) {
+		} catch (IOException e) {
+		}
 	}
 
 	/**
@@ -203,17 +217,17 @@ public class Util {
 	 */
 	public static void createSvg(Content notebook) {
 		for (Page page : notebook.getPages()) {
-			
+
 //			SvgDocument.createPortrait(page);
 //			SvgDocument.createLandscape(page);
-			
+
 			String orientation = page.getNotebook().getContentData().getOrientation();
 			if (orientation.equals("portrait")) {
 				SvgDocument.createPortrait(page);
 			} else {
 				SvgDocument.createLandscape(page);
 			}
-			
+
 			SvgMerger.merge(page, page.getTemplateName(), new File(getFilename(page, "svg")));
 		}
 	}
@@ -280,18 +294,18 @@ public class Util {
 				ZipEntry entry = entries.nextElement();
 
 				if (entry.getName().endsWith("." + ending)) {
-				//	System.out.println(entry.getName());
+					// System.out.println(entry.getName());
 					InputStream inputStream = zf.getInputStream(entry);
 //					StringWriter writer = new StringWriter();
 //					IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8.name());
-				
-					//System.out.println("!!"+writer.toString());
+
+					// System.out.println("!!"+writer.toString());
 					return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 				}
 			}
 
 		} catch (ZipException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
