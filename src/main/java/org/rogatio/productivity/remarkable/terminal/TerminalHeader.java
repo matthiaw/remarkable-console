@@ -34,7 +34,7 @@ public class TerminalHeader {
 
 	private static final String HEADERFOOTER =
 
-			"RemCom - Remarkable Console (" + PropertiesCache.getInstance().getProperty(PropertiesCache.VERSION)
+			"RemCom - Remarkable Console (" + PropertiesCache.getInstance().getValue(PropertiesCache.VERSION)
 					+ ")\r\n";
 
 	/**

@@ -118,6 +118,10 @@ public class PropertiesCache {
 	public static final String SSHPSWD = "ssh.password";
 	
 	public static final String SERVERPORT = "server.port";
+	
+	public static final String PDFHDEXPORT = "export.pdf.hd";
+	public static final String PDFPAGESINGLE = "export.pdf.page";
+	public static final String PDFPAGESMERGED = "export.pdf.notebook";
 
 	/**
 	 * Creates the.
@@ -137,6 +141,9 @@ public class PropertiesCache {
 			setProperty(SVGGRIDCOLOR, SVGG);
 			setProperty(PNGEXPORTSCALE, EXPORTSCALE);
 			setProperty(SERVERPORT, PORT);
+			setProperty(PDFHDEXPORT, true);
+			setProperty(PDFPAGESINGLE, true);
+			setProperty(PDFPAGESMERGED, true);
 			flush();
 			logger.error("Propertyfile '" + PROPERTYFILE + "' created");
 		} catch (FileNotFoundException e1) {
@@ -193,6 +200,10 @@ public class PropertiesCache {
 		return LazyHolder.INSTANCE;
 	}
 
+	public void setProperty(String key, boolean value) {
+		configProp.setProperty(key, value+"");
+	}
+	
 	/**
 	 * Sets the property.
 	 *
@@ -223,7 +234,7 @@ public class PropertiesCache {
 	 * @return true, if successful
 	 */
 	public boolean propertyExists(String key) {
-		String s = getProperty(key);
+		String s = getValue(key);
 
 		if (s != null) {
 			if (!s.trim().equals("")) {
@@ -234,15 +245,19 @@ public class PropertiesCache {
 		return false;
 	}
 
-	public Double getPropertyDouble(String key) {
+	public Double getDouble(String key) {
 		return Double.parseDouble(configProp.getProperty(key));
 	}
 	
-	public Integer getPropertyInt(String key) {
+	public Boolean getBoolean(String key) {
+		return Boolean.parseBoolean(configProp.getProperty(key));
+	}
+	
+	public Integer getInt(String key) {
 		return Integer.parseInt(configProp.getProperty(key));
 	}
 
-	public String getProperty(String key) {
+	public String getValue(String key) {
 		return configProp.getProperty(key);
 	}
 

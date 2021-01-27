@@ -23,7 +23,7 @@ public class Png2Pdf {
 
 	private static final Logger logger = LogManager.getLogger(Png2Pdf.class);
 
-	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getProperty(PropertiesCache.EXPORTFOLDER);
+	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
 	public static void convert(Page page) throws DocumentException, MalformedURLException, IOException {
 

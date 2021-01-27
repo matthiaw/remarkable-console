@@ -169,7 +169,7 @@ public class Application {
 	 */
 	private static void downloadTemplates(RemarkableManager rm) {
 		// read template folder from properties
-		String templateDir = PropertiesCache.getInstance().getProperty(PropertiesCache.TEMPLATEFOLDER);
+		String templateDir = PropertiesCache.getInstance().getValue(PropertiesCache.TEMPLATEFOLDER);
 
 		// download templates via ssh if not existing
 		if (!new File(templateDir).exists()) {

@@ -39,7 +39,7 @@ public class DownloadPageServlet extends BaseServlet {
 		} else {
 			if (type.equals("pdf")) {
 
-				String EXPORTFOLDER = PropertiesCache.getInstance().getProperty(PropertiesCache.EXPORTFOLDER);
+				String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
 				String folders = "";
 				if (nb.getFolders().size() > 0) {

@@ -59,8 +59,9 @@ public class RemarkableManager {
 	protected static final Logger logger = LogManager.getLogger(RemarkableManager.class);
 
 	/** The storage folder of the notebooks. */
-	private final String DOCUMENT_STORAGE = PropertiesCache.getInstance().getProperty(PropertiesCache.NOTEBOOKFOLDER);
+	private final String DOCUMENT_STORAGE = PropertiesCache.getInstance().getValue(PropertiesCache.NOTEBOOKFOLDER);
 
+	
 	/** The remarkable client to the remarkable web application. */
 	private RemarkableClient client;
 
@@ -85,7 +86,7 @@ public class RemarkableManager {
 				System.exit(0);
 			}
 
-			String deviceToken = PropertiesCache.getInstance().getProperty(DEVICETOKEN);
+			String deviceToken = PropertiesCache.getInstance().getValue(DEVICETOKEN);
 			INSTANCE = new RemarkableManager(deviceToken);
 		}
 
@@ -126,9 +127,9 @@ public class RemarkableManager {
 	 */
 	public void downloadTemplates() {
 		// get ssh-properties
-		String host = PropertiesCache.getInstance().getProperty(PropertiesCache.SSHHOST);
-		String pswd = PropertiesCache.getInstance().getProperty(PropertiesCache.SSHPSWD);
-		String targetDir = PropertiesCache.getInstance().getProperty(PropertiesCache.TEMPLATEFOLDER);
+		String host = PropertiesCache.getInstance().getValue(PropertiesCache.SSHHOST);
+		String pswd = PropertiesCache.getInstance().getValue(PropertiesCache.SSHPSWD);
+		String targetDir = PropertiesCache.getInstance().getValue(PropertiesCache.TEMPLATEFOLDER);
 		String templateSourceDir = PropertiesCache.TEMPLATEDIRHOST;
 
 		// instantiates SSH-client
@@ -451,7 +452,12 @@ public class RemarkableManager {
 
 			List<String> parents = getParentFolders(notebookID);
 			rNotebook.setFolders(parents);
-			logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
+
+			if (rNotebook.getFolders().size() > 0) {
+				logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
+			} else {
+				logger.debug("Path of '" + rNotebook.getName() + "' is ROOT");			
+			}
 
 			addContent(rNotebook);
 		} catch (IOException e) {
@@ -612,7 +618,7 @@ public class RemarkableManager {
 	public void exportNotebook(Content notebook) {
 		Util.createSvg(notebook);
 
-		double scale = PropertiesCache.getInstance().getPropertyDouble(PropertiesCache.PNGEXPORTSCALE);
+		double scale = PropertiesCache.getInstance().getDouble(PropertiesCache.PNGEXPORTSCALE);
 		Util.createPng(notebook, scale);
 
 		Util.createPdf(notebook);

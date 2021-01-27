@@ -51,7 +51,7 @@ public class SvgMerger {
 	protected static final Logger logger = LogManager.getLogger(SvgMerger.class);
 
 	/** The Constant COLOR. */
-	private static final String COLOR = PropertiesCache.getInstance().getProperty(PropertiesCache.SVGGRIDCOLOR);
+	private static final String COLOR = PropertiesCache.getInstance().getValue(PropertiesCache.SVGGRIDCOLOR);
 
 	/**
 	 * Merge.

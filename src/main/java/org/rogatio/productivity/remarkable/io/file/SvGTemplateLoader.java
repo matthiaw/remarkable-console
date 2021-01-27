@@ -44,7 +44,7 @@ public class SvGTemplateLoader {
 	public final static String TYPE_PNG = ".png";
 
 	/** The template folder. */
-	File templateFolder = new File(PropertiesCache.getInstance().getProperty(PropertiesCache.TEMPLATEFOLDER));
+	File templateFolder = new File(PropertiesCache.getInstance().getValue(PropertiesCache.TEMPLATEFOLDER));
 
 	/** The templates. */
 	private List<Template> _templates = new ArrayList<Template>();

@@ -65,6 +65,12 @@ public class Util {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(Util.class);
 
+	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	private static final boolean EXPORT_PDF_ALL = PropertiesCache.getInstance()
+			.getBoolean(PropertiesCache.PDFPAGESMERGED);
+	private static final boolean EXPORT_PDF_PAGES = PropertiesCache.getInstance()
+			.getBoolean(PropertiesCache.PDFPAGESINGLE);
+
 	/**
 	 * File exists.
 	 *
@@ -168,7 +174,7 @@ public class Util {
 	}
 
 	/** The Constant EXPORTFOLDER. */
-	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getProperty(PropertiesCache.EXPORTFOLDER);
+	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
 	/**
 	 * Creates the pdf.
@@ -177,20 +183,28 @@ public class Util {
 	 */
 	public static void createPdf(Content notebook) {
 		for (Page page : notebook.getPages()) {
-			Svg2Pdf.convert(page);
+			if (EXPORT_PDF_HD) {
+				Svg2Pdf.convert(page);
+			}
+			if (EXPORT_PDF_PAGES) {
+				try {
+					Png2Pdf.convert(page);
+				} catch (MalformedURLException e) {
+				} catch (DocumentException e) {
+				} catch (IOException e) {
+				}
+			}
+		}
+		if (EXPORT_PDF_HD) {
+			Svg2Pdf.merge(notebook);
+		}
+		if (EXPORT_PDF_ALL) {
 			try {
-				Png2Pdf.convert(page);
+				Png2Pdf.merge(notebook);
 			} catch (MalformedURLException e) {
 			} catch (DocumentException e) {
 			} catch (IOException e) {
 			}
-		}
-		Svg2Pdf.merge(notebook);
-		try {
-			Png2Pdf.merge(notebook);
-		} catch (MalformedURLException e) {
-		} catch (DocumentException e) {
-		} catch (IOException e) {
 		}
 	}
 

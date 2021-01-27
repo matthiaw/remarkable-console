@@ -53,7 +53,7 @@ public class EmbeddedServer {
 		server = new Server();
 		ServerConnector connector = new ServerConnector(server);
 		
-		int port = PropertiesCache.getInstance().getPropertyInt(PropertiesCache.SERVERPORT);
+		int port = PropertiesCache.getInstance().getInt(PropertiesCache.SERVERPORT);
 		connector.setPort(port);
 		
 		server.setConnectors(new Connector[] { connector });

@@ -44,7 +44,7 @@ public class Svg2Pdf {
 	private static final Logger logger = LogManager.getLogger(Svg2Pdf.class);
 
 	/** The Constant EXPORTFOLDER. */
-	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getProperty(PropertiesCache.EXPORTFOLDER);
+	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
 	/**
 	 * Merge.
@@ -63,13 +63,13 @@ public class Svg2Pdf {
 		}
 
 		String name = EXPORTFOLDER + File.separatorChar + folders + notebook.getName() + "_HD.pdf";
-		logger.debug("Convert SVG to PDF: " + name);
 		File pdffile = new File(name);
 		PDFMergerUtility pdf = new PDFMergerUtility();
 		pdf.setDestinationFileName(pdffile.getPath());
 		for (Page page : notebook.getPages()) {
 			String pdfFile = Util.getFilename(page, "_HD", "pdf");
-			try {
+			logger.debug("Merge PDF '" + pdfFile+"' to PDF '"+name+"'");
+				try {
 				pdf.addSource(pdfFile);
 			} catch (FileNotFoundException e) {
 			}

@@ -25,16 +25,16 @@ import org.rogatio.productivity.remarkable.io.PropertiesCache;
 public enum StrokeColor {
 
 	/** The primary. */
-	PRIMARY(0, PropertiesCache.getInstance().getProperty(PropertiesCache.SVGPRIMARYCOLOR)), 
+	PRIMARY(0, PropertiesCache.getInstance().getValue(PropertiesCache.SVGPRIMARYCOLOR)), 
 	
 	/** The secondary. */
-	SECONDARY(1, PropertiesCache.getInstance().getProperty(PropertiesCache.SVGSECONDARYCOLOR)), 
+	SECONDARY(1, PropertiesCache.getInstance().getValue(PropertiesCache.SVGSECONDARYCOLOR)), 
 	
 	/** The backround. */
-	BACKROUND(2, PropertiesCache.getInstance().getProperty(PropertiesCache.SVGBACKGROUNDCOLOR)),
+	BACKROUND(2, PropertiesCache.getInstance().getValue(PropertiesCache.SVGBACKGROUNDCOLOR)),
 	
 	/** The highlight. */
-	HIGHLIGHT(3, PropertiesCache.getInstance().getProperty(PropertiesCache.SVGHIGHLIGHTCOLOR));
+	HIGHLIGHT(3, PropertiesCache.getInstance().getValue(PropertiesCache.SVGHIGHLIGHTCOLOR));
 
 	/** The type. */
 	private final int type;
