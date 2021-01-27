@@ -17,7 +17,7 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.a;
+import static j2html.TagCreator.*;
 import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
@@ -30,7 +30,9 @@ import static j2html.TagCreator.tr;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.fop.util.text.IfFieldPart;
 import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.model.content.Content;
 
 import jakarta.servlet.ServletException;
@@ -45,6 +47,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/home")
 public class HomeServlet extends BaseServlet {
 	private static final long serialVersionUID = -512109101238411127L;
+
+	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	private static final boolean EXPORT_PDF_ALL = PropertiesCache.getInstance()
+			.getBoolean(PropertiesCache.PDFPAGESMERGED);
 
 	/**
 	 * Do get.
@@ -67,9 +73,17 @@ public class HomeServlet extends BaseServlet {
 
 		render(response, main(each(docs, d ->
 
-		div(table(tbody(tr(td(image(d.getThumbnail(), "notebook?id=" + d.getId()))),
-				tr(td(attrs(".title"), d.getName())), tr(td(attrs(".pages"), d.getPages().size() + " Seiten"),
-						tr(td(attrs(".downloads"), a("PDF").withHref("download?type=pdf&notebook=" + d.getId())))))))
+		div(table(
+				tbody(tr(td(image(d.getThumbnail(), "notebook?id=" + d.getId()))), tr(td(attrs(".title"), d.getName())),
+						tr(td(attrs(".pages"), d.getPages().size() + " Seiten"), tr(td(attrs(".downloads"),
+
+								iff(EXPORT_PDF_ALL, a("PDF").withHref("download?type=pdf&notebook=" + d.getId())),
+
+								iff(EXPORT_PDF_HD, text(" ")),
+								iff(EXPORT_PDF_HD, a("HD").withHref("download?type=pdfhd&notebook=" + d.getId()))
+
+								
+						))))))
 
 		)));
 

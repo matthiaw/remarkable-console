@@ -35,23 +35,31 @@ public class DownloadPageServlet extends BaseServlet {
 		String filePath = null;
 		if (no != null) {
 			p = nb.getPage(Integer.parseInt(request.getParameter("no")));
-			filePath = Util.getFilename(p, type);
+
+			if (!type.equals("pdfhd")) {
+				filePath = Util.getFilename(p, type);
+			} else {
+				filePath = Util.getFilename(p, "_HD", "pdf");
+			}
 		} else {
-			if (type.equals("pdf")) {
 
-				String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
+			String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
-				String folders = "";
-				if (nb.getFolders().size() > 0) {
-					for (String f : nb.getFolders()) {
-						folders += f + File.separatorChar;
-					}
-					File ff = new File(EXPORTFOLDER + File.separatorChar + folders);
-					ff.mkdirs();
+			String folders = "";
+			if (nb.getFolders().size() > 0) {
+				for (String f : nb.getFolders()) {
+					folders += f + File.separatorChar;
 				}
+				File ff = new File(EXPORTFOLDER + File.separatorChar + folders);
+				ff.mkdirs();
+			}
 
+			if (type.equals("pdf")) {
 				filePath = EXPORTFOLDER + File.separatorChar + folders + nb.getName() + ".pdf";
+			}
 
+			if (type.equals("pdfhd")) {
+				filePath = EXPORTFOLDER + File.separatorChar + folders + nb.getName() + "_HD.pdf";
 			}
 		}
 

@@ -17,8 +17,7 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.a;
-import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.*;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.main;
@@ -32,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.content.Page;
 
@@ -48,6 +48,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class NotebookServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -8455645168122367344L;
+
+	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	private static final boolean EXPORT_PDF_PAGES = PropertiesCache.getInstance()
+			.getBoolean(PropertiesCache.PDFPAGESINGLE);
 
 	/**
 	 * Do get.
@@ -76,8 +80,12 @@ public class NotebookServlet extends BaseServlet {
 						a("SVG").withHref("download?type=svg&notebook=" + nb.getId() + "&no=" + p.getPageNumber()),
 						text(" "),
 						a("PNG").withHref("download?type=png&notebook=" + nb.getId() + "&no=" + p.getPageNumber()),
-						text(" "),
-						a("PDF").withHref("download?type=pdf&notebook=" + nb.getId() + "&no=" + p.getPageNumber())
+						
+						iff(EXPORT_PDF_PAGES, text(" ")), iff(EXPORT_PDF_PAGES, a("PDF")
+								.withHref("download?type=pdf&notebook=" + nb.getId() + "&no=" + p.getPageNumber())),
+						
+						iff(EXPORT_PDF_HD, text(" ")), iff(EXPORT_PDF_HD, a("HD")
+								.withHref("download?type=pdfhd&notebook=" + nb.getId() + "&no=" + p.getPageNumber()))
 
 				)))))
 
