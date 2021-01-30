@@ -26,10 +26,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
-/**
- * The Class DownloadNotebooks.
- */
-@Command(name = "notebooks",description = "Handle Notebooks",  version = "1.0", mixinStandardHelpOptions = true)
+@Command(name = "notebooks", description = "Handle Notebooks", version = "1.0", mixinStandardHelpOptions = true)
 public class NotebooksCommand implements Callable {
 
 	@ParentCommand
@@ -49,22 +46,22 @@ public class NotebooksCommand implements Callable {
 
 	@Option(names = { "-f", "--full" }, description = "Download, Read and Export notebooks")
 	boolean full;
-	
+
 	public Void call() throws IOException {
-		//System.out.print(Prompt.getPrefix(" "));
+		// System.out.print(Prompt.getPrefix(" "));
 		if (update) {
 			RemarkableManager.getInstance().updateContents();
 		}
-		if (download||full) {
+		if (download || full) {
 			RemarkableManager.getInstance().downloadContents();
 		}
-		if (read||full) {
+		if (read || full) {
 			RemarkableManager.getInstance().readContents();
 		}
-		if (export||full) {
+		if (export || full) {
 			RemarkableManager.getInstance().exportNotebooks();
 		}
-		//System.out.println(Prompt.getPrefix(" "));
+		// System.out.println(Prompt.getPrefix(" "));
 		return null;
 	}
 

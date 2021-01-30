@@ -46,6 +46,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
@@ -61,7 +62,6 @@ public class RemarkableManager {
 	/** The storage folder of the notebooks. */
 	private final String DOCUMENT_STORAGE = PropertiesCache.getInstance().getValue(PropertiesCache.NOTEBOOKFOLDER);
 
-	
 	/** The remarkable client to the remarkable web application. */
 	private RemarkableClient client;
 
@@ -155,6 +155,27 @@ public class RemarkableManager {
 		for (ContentMetaData document : metadataNotebooks) {
 			if (document.iD.equals(id)) {
 				return document;
+			}
+		}
+		return null;
+	}
+
+	public ContentMetaData getMetaDataByFolderAndName(String name) {
+		if (metadataNotebooks != null) {
+			for (ContentMetaData meta : metadataNotebooks) {
+
+				List<String> p = this.getParentFolders(meta.iD);
+				String folders = "";
+				if (p.size() > 0) {
+					for (String f : p) {
+						folders += f + "_";
+					}
+				}
+
+				String folderAndName = folders + meta.vissibleName;
+				if (folderAndName.equals(name)) {
+					return meta;
+				}
 			}
 		}
 		return null;
@@ -456,7 +477,7 @@ public class RemarkableManager {
 			if (rNotebook.getFolders().size() > 0) {
 				logger.debug("Path of '" + rNotebook.getName() + "' is " + rNotebook.getFolders() + "");
 			} else {
-				logger.debug("Path of '" + rNotebook.getName() + "' is ROOT");			
+				logger.debug("Path of '" + rNotebook.getName() + "' is ROOT");
 			}
 
 			addContent(rNotebook);
@@ -510,7 +531,7 @@ public class RemarkableManager {
 	 *
 	 * @param notebookName the notebook name
 	 */
-	public void downloadNotebook(String notebookName) {
+	public void downloadContent(String notebookName) {
 		ContentMetaData metaDataNotebook = getMetaDataByName(notebookName);
 		downloadContent(metaDataNotebook);
 	}
@@ -537,8 +558,6 @@ public class RemarkableManager {
 			for (String f : p) {
 				folders += f + File.separatorChar;
 			}
-			// File ff = new File(folders);
-			// ff.mkdirs();
 		}
 
 		File zip = new File(DOCUMENT_STORAGE + File.separatorChar + folders + document.vissibleName + ".zip");
@@ -607,6 +626,31 @@ public class RemarkableManager {
 	public void exportNotebooks() {
 		for (Content notebook : getNotebooks()) {
 			exportNotebook(notebook);
+		}
+	}
+
+	public void exportNotebook(ContentMetaData meta) {
+		Content content = getContentById(meta.iD);
+		if (content != null) {
+			exportNotebook(content);
+		}
+	}
+
+	public void readContent(ContentMetaData meta) {
+		List<String> p = this.getParentFolders(meta.iD);
+		String folders = "";
+		if (p.size() > 0) {
+			for (String f : p) {
+				folders += f + File.separatorChar;
+			}
+		}
+
+		File zip = new File(DOCUMENT_STORAGE + File.separatorChar + folders + meta.vissibleName + ".zip");
+
+		if (zip.exists()) {
+			this.readContent(zip);
+		} else {
+			logger.error("Content '"+zip.toString()+"' not exists and could not be read.");
 		}
 	}
 

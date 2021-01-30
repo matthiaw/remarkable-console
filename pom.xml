@@ -19,6 +19,8 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<surefire.version>2.22.1</surefire.version>
+		<buildDirectory>${project.basedir}/target</buildDirectory>
+		<jarPrefix>jar-with-dependencies</jarPrefix>
 	</properties>
 
 	<dependencies>
@@ -140,10 +142,11 @@
 	</dependencies>
 
 	<build>
+		<directory>${buildDirectory}</directory>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<!-- <targetPath>${project.build.directory}</targetPath> -->
+				<targetPath>${project.build.directory}</targetPath>
 				<includes>
 					<include>log4j2.xml</include>
 					<include>styles.css</include>
@@ -153,7 +156,28 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy
+									file="${buildDirectory}/${project.artifactId}-${project.version}-${jarPrefix}.jar"
+									tofile="remarkable-console.jar" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -170,8 +194,8 @@
 				<inherited>true</inherited>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-					<source>${java-compiler.version}</source>
-					<target>${java-compiler.version}</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -196,7 +220,7 @@
 						</manifest>
 					</archive>
 					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
+						<descriptorRef>${jarPrefix}</descriptorRef>
 					</descriptorRefs>
 				</configuration>
 			</plugin>
