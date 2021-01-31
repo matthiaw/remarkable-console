@@ -34,7 +34,7 @@ $ mvn install
 When the application is started with 
 
 ```sh
-$ java -jar remarkable-console-0.1-SNAPSHOT-jar-with-dependencies.jar
+$ java -jar remarkable-console.jar
 ```
 
 then is starts registering to the web application [https://my.remarkable.com/](https://my.remarkable.com/)
