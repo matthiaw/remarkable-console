@@ -420,7 +420,7 @@ public class RemarkableManager {
 						list.add(s.nextLine());
 					}
 					rNotebook.setTemplateNames(list);
-					logger.info("Found '" + list.size() + "' templates (default is set as '"
+					logger.debug("Found '" + list.size() + "' templates (default is set as '"
 							+ rNotebook.getDefaultTemplate() + "')");
 					s.close();
 				} else

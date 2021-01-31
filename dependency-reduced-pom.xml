@@ -47,6 +47,13 @@
             <configuration>
               <transformers>
                 <transformer />
+                <transformer>
+                  <mainClass>foo.bar.Generate</mainClass>
+                  <manifestEntries>
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+                <transformer />
               </transformers>
             </configuration>
           </execution>

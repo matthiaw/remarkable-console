@@ -20,7 +20,7 @@
 
 		<Logger name="jakarta.servlet" level="INFO" />
 
-		<Root level="DEBUG">
+		<Root level="INFO">
 
 			<!-- <AppenderRef ref="ConsoleAppender" /> -->
 

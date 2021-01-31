@@ -284,7 +284,7 @@ public class Page {
 		if (new File(f).exists()) {
 			return new File(f);
 		} else {
-			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+			logger.debug("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
 		}
 		return null;
 	}

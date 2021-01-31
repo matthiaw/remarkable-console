@@ -17,10 +17,13 @@
  */
 package org.rogatio.productivity.remarkable.terminal.command;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 import java.util.concurrent.Callable;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
+import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.server.EmbeddedServer;
 import org.rogatio.productivity.remarkable.terminal.Prompt;
 
@@ -46,20 +49,23 @@ public class ServerCommand implements Callable {
 	boolean stop;
 
 	public Void call() throws IOException {
-		//System.out.print(Prompt.getPrefix(" "));
 		try {
 
 			if (start) {
 				server.start();
-				//System.out.println(Prompt.getPrefix(" "));
+
+				if (Desktop.isDesktopSupported()) {
+					Desktop desktop = Desktop.getDesktop();
+					int port = PropertiesCache.getInstance().getInt(PropertiesCache.SERVERPORT);
+					desktop.browse(new URI("http://localhost:" + port + "/"));
+				}
 			}
 			if (stop) {
 				server.stop();
 			}
 		} catch (Exception e) {
 		}
-		
-		//System.out.println(Prompt.getPrefix(" "));
+
 		return null;
 	}
 

@@ -75,7 +75,11 @@ public class Svg2Png {
 
 		String png = Util.getFilename(page, suffix, "png");
 
-		logger.info("Create '" + png + "'");
+		if (suffix != null) {
+			logger.info("Create '" + png + "'");
+		} else {
+			logger.info("Create '" + png + "'");
+		}
 
 		// https://stackoverflow.com/questions/45239099/apache-batik-no-writeadapter-is-available
 		// Read the input SVG document into Transcoder Input
@@ -114,7 +118,6 @@ public class Svg2Png {
 		};
 
 		// set target size of png
-
 		if (orientation.equals("portrait")) {
 			transcoder.addTranscodingHint(PNGTranscoder.KEY_WIDTH, new Float(page.getHorizontalWidth() * scale));
 			transcoder.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, new Float(page.getVerticalWidth() * scale));
