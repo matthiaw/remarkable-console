@@ -182,7 +182,7 @@ public class RequestClient {
 		try {
 			HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
 			HttpResponse<Path> response = client.send(request, BodyHandlers.ofFile(file.toPath()));
-			logger.info("Status "+response.statusCode() +" of streaming");
+			logger.debug("Status "+response.statusCode() +" of streaming");
 		} catch (IOException | InterruptedException e) {
 			logger.error("Error streaming file", e);
 		}

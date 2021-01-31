@@ -444,7 +444,7 @@ public class RemarkableManager {
 						// add page to notebook
 						rNotebook.add(page);
 
-						logger.info("Load " + page);
+						logger.debug("Load " + page);
 					}
 				} else {
 					// logger.debug("No importer defined yet for '" +

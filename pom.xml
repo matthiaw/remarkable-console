@@ -190,6 +190,19 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<configuration>
+					<programs>
+						<program>
+							<mainClass>org.rogatio.productivity.remarkable.Application</mainClass>
+							<id>app</id>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<inherited>true</inherited>
 				<version>${maven-compiler-plugin.version}</version>
