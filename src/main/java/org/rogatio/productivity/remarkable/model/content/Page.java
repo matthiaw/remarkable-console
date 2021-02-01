@@ -279,6 +279,26 @@ public class Page {
 				+ "): " + this.getLayers() + "]";
 	}
 
+	public File getPng() {
+		String f = Util.getFilename(this, "png");
+		if (new File(f).exists()) {
+			return new File(f);
+		} else {
+			logger.debug("Image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+		}
+		return null;
+	}
+	
+	public File getSvg() {
+		String f = Util.getFilename(this, "svg");
+		if (new File(f).exists()) {
+			return new File(f);
+		} else {
+			logger.debug("Image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+		}
+		return null;
+	}
+
 	public File getThumbnail() {
 		String f = Util.getFilename(this, "_thumbnail", "png");
 		if (new File(f).exists()) {

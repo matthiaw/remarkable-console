@@ -10,7 +10,6 @@ import static j2html.TagCreator.html;
 import static j2html.TagCreator.img;
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.style;
-import static j2html.TagCreator.styleWithInlineFile;
 import static j2html.TagCreator.title;
 
 import java.io.BufferedReader;
@@ -19,14 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import org.rogatio.productivity.remarkable.io.file.Util;
 
 import j2html.tags.ContainerTag;
-import j2html.tags.EmptyTag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
