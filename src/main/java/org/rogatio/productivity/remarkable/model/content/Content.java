@@ -228,13 +228,13 @@ public class Content {
 				return null;
 			}
 		}
-		String f = Util.getFilename(p, "_thumbnail", "png");
-		if (new File(f).exists()) {
-			return new File(f);
-		} else {
-			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
-		}
-		return null;
+//		String f = Util.getFilename(p, "_thumbnail", "png");
+//		if (new File(f).exists()) {
+//			return new File(f);
+//		} else {
+//			logger.info("Thumbnail image of " + new File(f).getAbsolutePath() + " not exists. Use export.");
+//		}
+		return p.getThumbnail();
 	}
 
 	public Type getType() {

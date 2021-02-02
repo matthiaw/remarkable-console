@@ -17,13 +17,7 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.a;
-import static j2html.TagCreator.attrs;
-import static j2html.TagCreator.div;
-import static j2html.TagCreator.fileAsString;
-import static j2html.TagCreator.iff;
-import static j2html.TagCreator.img;
-import static j2html.TagCreator.main;
+import static j2html.TagCreator.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,32 +34,56 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/page")
-public class PageServlet extends BaseServlet {
+@WebServlet("/navigation")
+public class PageNavigationServlet extends BaseServlet {
 
 	private static final long serialVersionUID = -5957420611509472672L;
 
-	/**
-	 * Do get.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @throws ServletException the servlet exception
-	 * @throws IOException      Signals that an I/O exception has occurred.
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		RemarkableManager rm = RemarkableManager.getInstance();
 		Content nb = rm.getContentById(request.getParameter("notebook"));
 		Page p = nb.getPage(Integer.parseInt(request.getParameter("no")));
-		String svgPath = Util.getFilename(p, "svg");
 
 		setTitle("Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber());
 
-		render(response, main(fileAsString(svgPath)));
-		
+		render(response,
+				main(div(attrs("#container"), refLeft(p), refRight(p)),
+						a(img(attrs(".center-fit")).withSrc(Util.imgToBase64String(p.getPng())))
+								.withHref("page?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))
+
+		);
 	}
+
+	private ContainerTag refLeft(Page p) {
+		try {
+			Content nb = p.getNotebook();
+			int no = p.getPageNumber() - 1;
+
+			File file = nb.getPage(no).getPng();
+
+			ContainerTag leftTag = div(attrs(".page .left"),
+					a("" + (no + 1)).withHref("navigation?notebook=" + nb.getId() + "&no=" + no));
+			return iff(file.exists(), iff(p.getPageNumber() > 0, leftTag));
+		} catch (Exception e) {
+			return iff(false, null);
+		}
+	}
+
+	private ContainerTag refRight(Page p) {
+		try {
+			Content nb = p.getNotebook();
+			int no = p.getPageNumber() + 1;
+
+			File file = nb.getPage(no).getPng();
+
+			ContainerTag rightTag = div(attrs(".page .right"),
+					a("" + (no + 1)).withHref("navigation?notebook=" + nb.getId() + "&no=" + no));
+			return iff(file.exists(), iff(p.getPageNumber() < p.getNotebook().getPages().size(), rightTag));
+		} catch (Exception e) {
+			return iff(false, null);
+		}
+	}
+
 }

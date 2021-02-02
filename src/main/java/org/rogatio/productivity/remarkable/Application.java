@@ -49,7 +49,7 @@ import picocli.shell.jline3.PicocliJLineCompleter;
  * The Class Application.
  */
 public class Application {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Application.class);
 
@@ -63,6 +63,13 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 
+		// delete old log files
+		for (File f : new File(".").listFiles()) {
+		    if (f.getName().endsWith(".log")) {
+		        f.delete(); 
+		    }
+		}
+		
 		// instantiates the remarkable manager
 		RemarkableManager rm = init();
 

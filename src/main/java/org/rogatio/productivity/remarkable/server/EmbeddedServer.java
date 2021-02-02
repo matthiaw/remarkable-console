@@ -25,7 +25,10 @@ import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.server.servlet.DownloadPageServlet;
 import org.rogatio.productivity.remarkable.server.servlet.HomeServlet;
 import org.rogatio.productivity.remarkable.server.servlet.NotebookServlet;
+import org.rogatio.productivity.remarkable.server.servlet.PageNavigationServlet;
 import org.rogatio.productivity.remarkable.server.servlet.PageServlet;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class EmbeddedServer.
@@ -42,6 +45,10 @@ public class EmbeddedServer {
 	 */
 	public void stop() throws Exception {
 		server.stop();
+	}
+	
+	public boolean isStarted() {
+		return server.isStarted();
 	}
 	
 	/**
@@ -61,6 +68,7 @@ public class EmbeddedServer {
 		ServletHandler servletHandler = new ServletHandler();
 		servletHandler.addServletWithMapping(HomeServlet.class, "/");
 		servletHandler.addServletWithMapping(NotebookServlet.class, "/notebook");
+		servletHandler.addServletWithMapping(PageNavigationServlet.class, "/navigation");
 		servletHandler.addServletWithMapping(PageServlet.class, "/page");
 		servletHandler.addServletWithMapping(DownloadPageServlet.class, "/download");
 		server.setHandler(servletHandler);

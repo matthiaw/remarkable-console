@@ -72,7 +72,7 @@ public class NotebookServlet extends BaseServlet {
 
 		render(response, main(each(pages, p ->
 
-		div(table(tbody(tr(td(image(p.getThumbnail(), "page?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))),
+		div(table(tbody(tr(td(image(p.getThumbnail(), "navigation?notebook=" + nb.getId() + "&no=" + p.getPageNumber()))),
 				tr(td(attrs(".downloads"),
 						a("SVG").withHref("download?type=svg&notebook=" + nb.getId() + "&no=" + p.getPageNumber()),
 						text(" "),

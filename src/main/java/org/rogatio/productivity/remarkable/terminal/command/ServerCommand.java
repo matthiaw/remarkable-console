@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.server.EmbeddedServer;
@@ -50,7 +51,6 @@ public class ServerCommand implements Callable {
 
 	public Void call() throws IOException {
 		try {
-
 			if (start) {
 				server.start();
 
@@ -59,9 +59,10 @@ public class ServerCommand implements Callable {
 					int port = PropertiesCache.getInstance().getInt(PropertiesCache.SERVERPORT);
 					desktop.browse(new URI("http://localhost:" + port + "/"));
 				}
-			}
-			if (stop) {
+			} else if (stop) {
 				server.stop();
+			} else {
+				System.out.println("Server is started: " + server.isStarted());
 			}
 		} catch (Exception e) {
 		}
