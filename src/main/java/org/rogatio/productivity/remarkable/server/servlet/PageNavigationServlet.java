@@ -17,7 +17,12 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.a;
+import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.iff;
+import static j2html.TagCreator.img;
+import static j2html.TagCreator.main;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +35,6 @@ import org.rogatio.productivity.remarkable.model.content.Page;
 import j2html.tags.ContainerTag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

@@ -39,11 +39,8 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
-/**
- * The Class TerminalAppender.
- */
-@Plugin(name = "TerminalAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
-public class TerminalAppender extends AbstractAppender {
+@Plugin(name = "ServletAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
+public class ServletAppender extends AbstractAppender {
 
 	/** The event map. */
 	private ConcurrentMap<String, LogEvent> eventMap = new ConcurrentHashMap<>();
@@ -55,35 +52,20 @@ public class TerminalAppender extends AbstractAppender {
 	 * @param filter the filter
 	 */
 	@SuppressWarnings("deprecation")
-	protected TerminalAppender(String name, Filter filter) {
+	protected ServletAppender(String name, Filter filter) {
 		super(name, filter, null);
 	}
 
-	/**
-	 * Instantiates a new terminal appender.
-	 *
-	 * @param name             the name
-	 * @param filter           the filter
-	 * @param layout           the layout
-	 * @param ignoreExceptions the ignore exceptions
-	 */
 	@SuppressWarnings("deprecation")
-	protected TerminalAppender(String name, Filter filter, Layout<? extends Serializable> layout,
+	protected ServletAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions) {
 		super(name, filter, layout, ignoreExceptions);
 	}
 
-	/**
-	 * Creates the appender.
-	 *
-	 * @param name   the name
-	 * @param filter the filter
-	 * @return the terminal appender
-	 */
 	@PluginFactory
-	public static TerminalAppender createAppender(@PluginAttribute("name") String name,
+	public static ServletAppender createAppender(@PluginAttribute("name") String name,
 			@PluginElement("Filter") Filter filter) {
-		return new TerminalAppender(name, filter);
+		return new ServletAppender(name, filter);
 	}
 
 	/**
@@ -95,26 +77,33 @@ public class TerminalAppender extends AbstractAppender {
 	public void append(LogEvent event) {
 		eventMap.put(Instant.now().toString(), event);
 
-		String color = getColor(event);
+		if (writer != null) {
+			String color = getColor(event);
+			writer.println("<font face=\"arial,helvetica\" color=\"" + color + "\">" + event.getLevel() + "</font>"+
+					"<font face=\"arial,helvetica\">"+ event.getMessage().getFormattedMessage() + "</font><br>");
+			writer.flush();
+		}
 
-		String line = (color + "[" + event.getLevel().name() + "] " + TerminalColor.RESET
-				+ event.getMessage().getFormattedMessage() + "\n" + Prompt.getPrefix(" "));
+	}
 
-		System.out.print(line);
+	private PrintWriter writer;
 
+	public void setWriter(PrintWriter pw) {
+		writer = pw;
 	}
 
 	private String getColor(LogEvent event) {
-		String color = TerminalColor.BLACK_BOLD_BRIGHT;
+		String color = "#000000";
 		if (event.getLevel() == Level.INFO) {
-			color = TerminalColor.GREEN_BOLD_BRIGHT;
+			color = "#00FF00";
 		} else if (event.getLevel() == Level.WARN) {
-			color = TerminalColor.YELLOW_BOLD_BRIGHT;
+			color = "#FFFF00";
 		} else if (event.getLevel() == Level.ERROR) {
-			color = TerminalColor.RED_BOLD_BRIGHT;
+			color = "#FF0000";
 		} else if (event.getLevel() == Level.DEBUG) {
-			color = TerminalColor.BLUE_BOLD_BRIGHT;
+			color = "#0000FF";
 		}
 		return color;
 	}
+
 }

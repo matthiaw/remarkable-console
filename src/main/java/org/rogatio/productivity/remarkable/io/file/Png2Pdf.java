@@ -26,7 +26,6 @@ public class Png2Pdf {
 	private static final String EXPORTFOLDER = PropertiesCache.getInstance().getValue(PropertiesCache.EXPORTFOLDER);
 
 	public static void convert(Page page) throws DocumentException, MalformedURLException, IOException {
-
 		String pngFile = Util.getFilename(page, "png");
 		String pdfFile = Util.getFilename(page, "pdf");
 

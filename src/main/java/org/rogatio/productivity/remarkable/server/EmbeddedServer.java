@@ -27,6 +27,7 @@ import org.rogatio.productivity.remarkable.server.servlet.HomeServlet;
 import org.rogatio.productivity.remarkable.server.servlet.NotebookServlet;
 import org.rogatio.productivity.remarkable.server.servlet.PageNavigationServlet;
 import org.rogatio.productivity.remarkable.server.servlet.PageServlet;
+import org.rogatio.productivity.remarkable.server.servlet.ProcessorServlet;
 
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
@@ -71,6 +72,7 @@ public class EmbeddedServer {
 		servletHandler.addServletWithMapping(PageNavigationServlet.class, "/navigation");
 		servletHandler.addServletWithMapping(PageServlet.class, "/page");
 		servletHandler.addServletWithMapping(DownloadPageServlet.class, "/download");
+		servletHandler.addServletWithMapping(ProcessorServlet.class, "/processor");
 		server.setHandler(servletHandler);
 
 		server.start();
