@@ -79,7 +79,7 @@ public class ServletAppender extends AbstractAppender {
 
 		if (writer != null) {
 			String color = getColor(event);
-			writer.println("<font face=\"arial,helvetica\" color=\"" + color + "\">" + event.getLevel() + "</font>"+
+			writer.println("<font face=\"arial,helvetica\" color=\"" + color + "\"><b>" + event.getLevel() + "</b></font> "+
 					"<font face=\"arial,helvetica\">"+ event.getMessage().getFormattedMessage() + "</font><br>");
 			writer.flush();
 		}

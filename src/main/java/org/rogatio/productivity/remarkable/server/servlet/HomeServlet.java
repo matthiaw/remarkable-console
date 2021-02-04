@@ -77,7 +77,7 @@ public class HomeServlet extends BaseServlet {
 
 		ContainerTag processor = a("Export").withHref("processor?download=true&read=true&export=true");
 
-		render(response, main(div(processor).attr("style", "text-align:center"), br(), each(docs, d ->
+		render(response, main(div(processor).attr("style", "text-align:right"), br(), each(docs, d ->
 
 		div(table(
 				tbody(tr(td(image(d.getThumbnail(), "notebook?id=" + d.getId()))), tr(td(attrs(".title"), d.getName())),
