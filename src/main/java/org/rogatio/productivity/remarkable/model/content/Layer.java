@@ -76,6 +76,11 @@ public class Layer {
 		return "Layer [no=" + this.getLayerNumber() + ", Strokes (" + getStrokes().size() + ")]";
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -85,6 +90,12 @@ public class Layer {
 		return result;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

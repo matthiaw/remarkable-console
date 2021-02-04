@@ -40,21 +40,39 @@ public class Svg2Png {
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Svg2Png.class);
 
+	/**
+	 * Creates the thumbnail.
+	 *
+	 * @param page the page
+	 * @throws TranscoderException the transcoder exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void createThumbnail(Page page) throws TranscoderException, IOException {
 		createPng(page, "_thumbnail", 0.1);
 	}
 
+	/**
+	 * Creates the png.
+	 *
+	 * @param page the page
+	 * @param scale the scale
+	 * @throws TranscoderException the transcoder exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void createPng(Page page, double scale) throws TranscoderException, IOException {
 		createPng(page, null, scale);
 	}
 
 	/**
-	 * 
-	 * @param page
-	 * @param scale
-	 * @throws TranscoderException
-	 * @throws IOException
+	 * Creates the png.
+	 *
+	 * @param page the page
+	 * @param suffix the suffix
+	 * @param scale the scale
+	 * @throws TranscoderException the transcoder exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("deprecation")
 	public static void createPng(Page page, String suffix, double scale) throws TranscoderException, IOException {
 
 		if (scale <= 0.0) {
@@ -128,6 +146,7 @@ public class Svg2Png {
 
 		// Convert and Write output
 		transcoder.transcode(input_svg_image, output_png_image);
+	
 		// Close / flush Output Stream
 		png_ostream.flush();
 		png_ostream.close();

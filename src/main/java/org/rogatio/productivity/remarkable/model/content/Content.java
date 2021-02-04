@@ -23,9 +23,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
-import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 
 /**
@@ -35,6 +33,7 @@ import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
  */
 public class Content {
 
+	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(Content.class);
 
 	/** The id. */
@@ -43,17 +42,26 @@ public class Content {
 	/** The name. */
 	private String name;
 
+	/** The type. */
 	private String type;
 
+	/** The current page. */
 	private int currentPage;
 
 	/** The template names. */
 	private List<String> templateNames = new ArrayList<>();
 
+	/** The meta data. */
 	private ContentMetaData metaData;
 
+	/** The content data. */
 	private ContentData contentData;
 
+	/**
+	 * Instantiates a new content.
+	 *
+	 * @param metaData the meta data
+	 */
 	public Content(ContentMetaData metaData) {
 		this.id = metaData.iD;
 		this.name = metaData.vissibleName;
@@ -72,10 +80,20 @@ public class Content {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the current page number.
+	 *
+	 * @return the current page number
+	 */
 	public int getCurrentPageNumber() {
 		return currentPage;
 	}
 
+	/**
+	 * Sets the current page number.
+	 *
+	 * @param currentPage the new current page number
+	 */
 	public void setCurrentPageNumber(int currentPage) {
 		this.currentPage = currentPage;
 	}
@@ -89,31 +107,62 @@ public class Content {
 		return name;
 	}
 
+	/** The folders. */
 	private List<String> folders = new ArrayList<String>();
 
 	/** The pages. */
 	private List<Page> pages = new ArrayList<Page>();
 
+	/**
+	 * Gets the folders.
+	 *
+	 * @return the folders
+	 */
 	public List<String> getFolders() {
 		return folders;
 	}
 
+	/**
+	 * Sets the folders.
+	 *
+	 * @param folders the new folders
+	 */
 	public void setFolders(List<String> folders) {
 		this.folders = folders;
 	}
 
+	/**
+	 * Gets the meta data.
+	 *
+	 * @return the meta data
+	 */
 	public ContentMetaData getMetaData() {
 		return metaData;
 	}
 
+	/**
+	 * Sets the meta data.
+	 *
+	 * @param metaData the new meta data
+	 */
 	public void setMetaData(ContentMetaData metaData) {
 		this.metaData = metaData;
 	}
 
+	/**
+	 * Gets the content data.
+	 *
+	 * @return the content data
+	 */
 	public ContentData getContentData() {
 		return contentData;
 	}
 
+	/**
+	 * Sets the content data.
+	 *
+	 * @param contentData the new content data
+	 */
 	public void setContentData(ContentData contentData) {
 		this.contentData = contentData;
 	}
@@ -194,6 +243,11 @@ public class Content {
 		pages.add(page);
 	}
 
+	/**
+	 * Sets the pages.
+	 *
+	 * @param pages the new pages
+	 */
 	public void setPages(List<Page> pages) {
 		this.pages = pages;
 
@@ -220,6 +274,11 @@ public class Content {
 		return pages;
 	}
 
+	/**
+	 * Gets the thumbnail.
+	 *
+	 * @return the thumbnail
+	 */
 	public File getThumbnail() {
 		Page p = this.getPage(currentPage);
 		if (p == null) {
@@ -237,14 +296,29 @@ public class Content {
 		return p.getThumbnail();
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public Type getType() {
 		return Type.get(type);
 	}
 
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -254,6 +328,12 @@ public class Content {
 		return result;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

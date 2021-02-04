@@ -17,13 +17,10 @@
  */
 package org.rogatio.productivity.remarkable.terminal;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.sound.midi.VoiceStatus;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -36,8 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class TerminalAppender.
@@ -87,7 +82,7 @@ public class TerminalAppender extends AbstractAppender {
 	}
 
 	/**
-	 * Append log to terminal appender
+	 * Append log to terminal appender.
 	 *
 	 * @param event the event
 	 */
@@ -104,6 +99,12 @@ public class TerminalAppender extends AbstractAppender {
 
 	}
 
+	/**
+	 * Gets the color.
+	 *
+	 * @param event the event
+	 * @return the color
+	 */
 	private String getColor(LogEvent event) {
 		String color = TerminalColor.BLACK_BOLD_BRIGHT;
 		if (event.getLevel() == Level.INFO) {

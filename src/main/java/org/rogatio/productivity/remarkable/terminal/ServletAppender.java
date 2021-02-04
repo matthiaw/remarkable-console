@@ -23,8 +23,6 @@ import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.sound.midi.VoiceStatus;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -37,8 +35,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
+/**
+ * The Class ServletAppender.
+ */
 @Plugin(name = "ServletAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE)
 public class ServletAppender extends AbstractAppender {
 
@@ -56,12 +55,27 @@ public class ServletAppender extends AbstractAppender {
 		super(name, filter, null);
 	}
 
+	/**
+	 * Instantiates a new servlet appender.
+	 *
+	 * @param name the name
+	 * @param filter the filter
+	 * @param layout the layout
+	 * @param ignoreExceptions the ignore exceptions
+	 */
 	@SuppressWarnings("deprecation")
 	protected ServletAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			boolean ignoreExceptions) {
 		super(name, filter, layout, ignoreExceptions);
 	}
 
+	/**
+	 * Creates the appender.
+	 *
+	 * @param name the name
+	 * @param filter the filter
+	 * @return the servlet appender
+	 */
 	@PluginFactory
 	public static ServletAppender createAppender(@PluginAttribute("name") String name,
 			@PluginElement("Filter") Filter filter) {
@@ -69,7 +83,7 @@ public class ServletAppender extends AbstractAppender {
 	}
 
 	/**
-	 * Append log to terminal appender
+	 * Append log to terminal appender.
 	 *
 	 * @param event the event
 	 */
@@ -86,12 +100,24 @@ public class ServletAppender extends AbstractAppender {
 
 	}
 
+	/** The writer. */
 	private PrintWriter writer;
 
+	/**
+	 * Sets the writer.
+	 *
+	 * @param pw the new writer
+	 */
 	public void setWriter(PrintWriter pw) {
 		writer = pw;
 	}
 
+	/**
+	 * Gets the color.
+	 *
+	 * @param event the event
+	 * @return the color
+	 */
 	private String getColor(LogEvent event) {
 		String color = "#000000";
 		if (event.getLevel() == Level.INFO) {

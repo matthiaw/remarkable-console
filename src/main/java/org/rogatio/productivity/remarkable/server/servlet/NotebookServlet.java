@@ -41,12 +41,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * The Class NotebookServlet.
+ */
 @WebServlet("/notebook")
 public class NotebookServlet extends BaseServlet {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8455645168122367344L;
 
+	/** The Constant EXPORT_PDF_HD. */
 	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	
+	/** The Constant EXPORT_PDF_PAGES. */
 	private static final boolean EXPORT_PDF_PAGES = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESINGLE);
 

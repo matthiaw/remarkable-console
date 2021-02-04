@@ -23,12 +23,22 @@ import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * The Class ExitTerminalCommand.
+ */
 @Command(name = "exit", description = "Exit the terminal", version = "1.0", mixinStandardHelpOptions = true)
-public class ExitTerminalCommand implements Callable {
+public class ExitTerminalCommand implements Callable<Object> {
 
+	/** The parent. */
 	@ParentCommand
 	private CommandlineCommands parent;
 
+	/**
+	 * Call.
+	 *
+	 * @return the void
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public Void call() throws IOException {
 		System.exit(0);
 		return null;

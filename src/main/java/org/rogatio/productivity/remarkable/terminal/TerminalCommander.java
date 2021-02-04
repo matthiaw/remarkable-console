@@ -42,7 +42,7 @@ public class TerminalCommander {
 	}
 
 	/**
-	 * Excecute the command
+	 * Excecute the command.
 	 *
 	 * @param command the command
 	 * @return the int

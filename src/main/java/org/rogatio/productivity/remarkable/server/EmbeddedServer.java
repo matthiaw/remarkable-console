@@ -29,8 +29,6 @@ import org.rogatio.productivity.remarkable.server.servlet.PageNavigationServlet;
 import org.rogatio.productivity.remarkable.server.servlet.PageServlet;
 import org.rogatio.productivity.remarkable.server.servlet.ProcessorServlet;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 /**
  * The Class EmbeddedServer.
  */

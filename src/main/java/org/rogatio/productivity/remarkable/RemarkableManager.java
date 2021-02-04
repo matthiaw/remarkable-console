@@ -46,7 +46,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
@@ -160,6 +159,12 @@ public class RemarkableManager {
 		return null;
 	}
 
+	/**
+	 * Gets the meta data by folder and name.
+	 *
+	 * @param name the name
+	 * @return the meta data by folder and name
+	 */
 	public ContentMetaData getMetaDataByFolderAndName(String name) {
 		if (metadataNotebooks != null) {
 			for (ContentMetaData meta : metadataNotebooks) {
@@ -495,6 +500,11 @@ public class RemarkableManager {
 
 	}
 
+	/**
+	 * Removes the content.
+	 *
+	 * @param content the content
+	 */
 	public void removeContent(Content content) {
 		Content contentToRemove = null;
 		for (Content c : contents) {
@@ -507,6 +517,11 @@ public class RemarkableManager {
 		}
 	}
 
+	/**
+	 * Adds the content.
+	 *
+	 * @param content the content
+	 */
 	public void addContent(Content content) {
 		removeContent(content);
 		if (!contents.contains(content)) {
@@ -629,6 +644,11 @@ public class RemarkableManager {
 		}
 	}
 
+	/**
+	 * Export notebook.
+	 *
+	 * @param meta the meta
+	 */
 	public void exportNotebook(ContentMetaData meta) {
 		Content content = getContentById(meta.iD);
 		if (content != null) {
@@ -636,6 +656,11 @@ public class RemarkableManager {
 		}
 	}
 
+	/**
+	 * Read content.
+	 *
+	 * @param meta the meta
+	 */
 	public void readContent(ContentMetaData meta) {
 		List<String> p = this.getParentFolders(meta.iD);
 		String folders = "";

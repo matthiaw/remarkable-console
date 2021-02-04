@@ -21,24 +21,33 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.terminal.ServletAppender;
-import org.rogatio.productivity.remarkable.terminal.TerminalAppender;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * The Class ProcessorServlet.
+ */
 @WebServlet("/processor")
 public class ProcessorServlet extends BaseServlet {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5957420611509472672L;
 
+	/**
+	 * Do get.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

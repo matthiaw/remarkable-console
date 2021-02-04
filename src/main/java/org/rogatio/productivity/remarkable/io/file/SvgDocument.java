@@ -60,6 +60,11 @@ public class SvgDocument {
 		createPortrait(page, name);
 	}
 
+	/**
+	 * Creates the landscape.
+	 *
+	 * @param page the page
+	 */
 	public static void createLandscape(Page page) {
 		String name = Util.getFilename(page, "svg");
 
@@ -127,6 +132,12 @@ public class SvgDocument {
 		}
 	}
 
+	/**
+	 * Creates the landscape.
+	 *
+	 * @param page the page
+	 * @param fileName the file name
+	 */
 	public static void createLandscape(Page page, String fileName) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));

@@ -22,11 +22,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.server.EmbeddedServer;
-import org.rogatio.productivity.remarkable.terminal.Prompt;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -36,19 +33,29 @@ import picocli.CommandLine.ParentCommand;
  * The Class DownloadNotebooks.
  */
 @Command(name = "server", description = "Manage embedded server", version = "1.0", mixinStandardHelpOptions = true)
-public class ServerCommand implements Callable {
+public class ServerCommand implements Callable<Object> {
 
+	/** The server. */
 	private EmbeddedServer server = new EmbeddedServer();
 
+	/** The parent. */
 	@ParentCommand
 	private CommandlineCommands parent;
 
+	/** The start. */
 	@Option(names = { "--start" }, description = "Start Server")
 	boolean start;
 
+	/** The stop. */
 	@Option(names = { "--stop" }, description = "Stop Server")
 	boolean stop;
 
+	/**
+	 * Call.
+	 *
+	 * @return the void
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public Void call() throws IOException {
 		try {
 			if (start) {

@@ -33,9 +33,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * The Class PageServlet.
+ */
 @WebServlet("/page")
 public class PageServlet extends BaseServlet {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5957420611509472672L;
 
 	/**
@@ -59,6 +63,6 @@ public class PageServlet extends BaseServlet {
 		setTitle("Remarkable Console - Notebook '" + nb.getName() + "' - Page No. " + p.getPageNumber());
 
 		render(response, main(fileAsString(svgPath)));
-		
+
 	}
 }

@@ -24,11 +24,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -41,7 +39,6 @@ import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 
 import org.apache.batik.transcoder.TranscoderException;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
@@ -49,7 +46,6 @@ import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.content.Page;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.itextpdf.text.DocumentException;
@@ -65,9 +61,14 @@ public class Util {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(Util.class);
 
+	/** The Constant EXPORT_PDF_HD. */
 	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	
+	/** The Constant EXPORT_PDF_ALL. */
 	private static final boolean EXPORT_PDF_ALL = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESMERGED);
+	
+	/** The Constant EXPORT_PDF_PAGES. */
 	private static final boolean EXPORT_PDF_PAGES = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESINGLE);
 
@@ -85,6 +86,12 @@ public class Util {
 		return false;
 	}
 
+	/**
+	 * Creates the folder structure.
+	 *
+	 * @param page the page
+	 * @return the string
+	 */
 	private static String createFolderStructure(Page page) {
 		String folders = "";
 		if (page.getNotebook().getFolders().size() > 0) {
@@ -97,6 +104,13 @@ public class Util {
 		return folders;
 	}
 
+	/**
+	 * List files.
+	 *
+	 * @param dir the dir
+	 * @param ending the ending
+	 * @return the array list
+	 */
 	public static ArrayList<File> listFiles(File dir, String ending) {
 		if (null == dir || !dir.isDirectory()) {
 			return new ArrayList<>();
@@ -133,6 +147,14 @@ public class Util {
 		return new ArrayList<>(fileTree);
 	}
 
+	/**
+	 * Gets the filename.
+	 *
+	 * @param page the page
+	 * @param suffix the suffix
+	 * @param ending the ending
+	 * @return the filename
+	 */
 	public static String getFilename(Page page, String suffix, String ending) {
 
 		if (suffix == null) {
@@ -147,6 +169,13 @@ public class Util {
 		return name;
 	}
 
+	/**
+	 * Gets the filename.
+	 *
+	 * @param page the page
+	 * @param ending the ending
+	 * @return the filename
+	 */
 	public static String getFilename(Page page, String ending) {
 		return getFilename(page, null, ending);
 	}
@@ -212,6 +241,7 @@ public class Util {
 	 * Creates the png.
 	 *
 	 * @param notebook the notebook
+	 * @param scale the scale
 	 */
 	public static void createPng(Content notebook, double scale) {
 		for (Page page : notebook.getPages()) {
@@ -246,6 +276,12 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Img to base 64 string.
+	 *
+	 * @param imgFile the img file
+	 * @return the string
+	 */
 	public static String imgToBase64String(File imgFile) {
 		BufferedImage image = null;
 
@@ -264,6 +300,13 @@ public class Util {
 		return imgToBase64String(image, ending);
 	}
 
+	/**
+	 * Img to base 64 string.
+	 *
+	 * @param img the img
+	 * @param formatName the format name
+	 * @return the string
+	 */
 	public static String imgToBase64String(final RenderedImage img, final String formatName) {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -276,6 +319,12 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Adds the meta to zip.
+	 *
+	 * @param document the document
+	 * @param zip the zip
+	 */
 	public static void addMetaToZip(ContentMetaData document, File zip) {
 		try {
 			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zip);
@@ -297,6 +346,13 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Gets the file content.
+	 *
+	 * @param zipFile the zip file
+	 * @param ending the ending
+	 * @return the file content
+	 */
 	public static String getFileContent(File zipFile, String ending) {
 		ZipFile zf = null;
 		try {

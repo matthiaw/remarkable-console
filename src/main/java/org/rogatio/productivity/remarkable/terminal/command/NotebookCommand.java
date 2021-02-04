@@ -27,38 +27,53 @@ import java.util.concurrent.Callable;
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
 import org.rogatio.productivity.remarkable.io.file.Util;
-import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
-
-import com.itextpdf.text.pdf.security.CertificateInfo.X500Name;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * The Class NotebookCommand.
+ */
 @Command(name = "notebook", description = "Handle Notebook", version = "1.0", mixinStandardHelpOptions = true)
-public class NotebookCommand implements Callable {
+public class NotebookCommand implements Callable<Object> {
 
+	/** The Constant DOCUMENT_STORAGE. */
 	private static final String DOCUMENT_STORAGE = PropertiesCache.getInstance()
 			.getValue(PropertiesCache.NOTEBOOKFOLDER);
 
+	/** The parent. */
 	@ParentCommand
 	private CommandlineCommands parent;
 
+	/** The download. */
 	@Option(names = { "-d", "--download" }, description = "Download notebook")
 	boolean download;
 
+	/** The read. */
 	@Option(names = { "-r", "--read" }, description = "Read notebook")
 	boolean read;
 
+	/** The export. */
 	@Option(names = { "-e", "--export" }, description = "Export notebook")
 	boolean export;
 
+	/** The full. */
 	@Option(names = { "-f", "--full" }, description = "Download, Read and Export notebook")
 	boolean full;
 
+	/**
+	 * The Class NotebookCompletionCandidates.
+	 */
 	private static class NotebookCompletionCandidates implements Iterable<String> {
+		
+		/**
+		 * Iterator.
+		 *
+		 * @return the iterator
+		 */
 		public Iterator<String> iterator() {
 			ArrayList<File> files = Util.listFiles(new File(DOCUMENT_STORAGE), "meta");
 			ArrayList<String> notebookStrings = new ArrayList<>();
@@ -75,9 +90,16 @@ public class NotebookCommand implements Callable {
 		}
 	}
 
+	/** The files. */
 	@Parameters(description = "Name of notebook", arity = "1", completionCandidates = NotebookCompletionCandidates.class)
 	private List<String> files = new ArrayList<String>();
 
+	/**
+	 * Call.
+	 *
+	 * @return the void
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public Void call() throws IOException {
 
 		if (files.size() == 1) {

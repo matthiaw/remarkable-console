@@ -17,12 +17,12 @@
  */
 package org.rogatio.productivity.remarkable.server.servlet;
 
-import static j2html.TagCreator.*;
+import static j2html.TagCreator.a;
 import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.br;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.iff;
-import static j2html.TagCreator.img;
 import static j2html.TagCreator.main;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.tbody;
@@ -35,7 +35,6 @@ import java.util.List;
 
 import org.rogatio.productivity.remarkable.RemarkableManager;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
-import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.model.content.Content;
 
 import j2html.tags.ContainerTag;
@@ -50,9 +49,14 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebServlet("/home")
 public class HomeServlet extends BaseServlet {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -512109101238411127L;
 
+	/** The Constant EXPORT_PDF_HD. */
 	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
+	
+	/** The Constant EXPORT_PDF_ALL. */
 	private static final boolean EXPORT_PDF_ALL = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESMERGED);
 

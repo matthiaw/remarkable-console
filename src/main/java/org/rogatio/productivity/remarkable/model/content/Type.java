@@ -17,19 +17,35 @@
  */
 package org.rogatio.productivity.remarkable.model.content;
 
+/**
+ * The Enum Type.
+ */
 public enum Type {
 
+	/** The document. */
 	DOCUMENT("Document"),
 
+	/** The collection. */
 	COLLECTION("Collection");
 
 	/** The type. */
 	private final String type;
 
+	/**
+	 * Instantiates a new type.
+	 *
+	 * @param type the type
+	 */
 	private Type(String type) {
 		this.type = type + "Type";
 	}
 
+	/**
+	 * Gets the.
+	 *
+	 * @param type the type
+	 * @return the type
+	 */
 	public static Type get(String type) {
 		Type[] types = Type.values();
 		for (Type t : types) {
@@ -41,6 +57,11 @@ public enum Type {
 		return null;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}

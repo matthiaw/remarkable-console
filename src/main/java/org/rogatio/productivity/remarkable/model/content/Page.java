@@ -36,6 +36,7 @@ import org.rogatio.productivity.remarkable.io.file.Util;
  */
 public class Page {
 
+	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(Page.class);
 
 	/** The header. */
@@ -172,10 +173,21 @@ public class Page {
 		return notebook;
 	}
 
+	/**
+	 * Instantiates a new page.
+	 *
+	 * @param pageNumber the page number
+	 * @param bytes the bytes
+	 */
 	public Page(int pageNumber, byte[] bytes) {
 		this(pageNumber, bytes, null);
 	}
 
+	/**
+	 * Sets the notebook.
+	 *
+	 * @param notebook the new notebook
+	 */
 	public void setNotebook(Content notebook) {
 		this.notebook = notebook;
 	}
@@ -279,6 +291,11 @@ public class Page {
 				+ "): " + this.getLayers() + "]";
 	}
 
+	/**
+	 * Gets the png.
+	 *
+	 * @return the png
+	 */
 	public File getPng() {
 		String f = Util.getFilename(this, "png");
 		if (new File(f).exists()) {
@@ -289,6 +306,11 @@ public class Page {
 		return null;
 	}
 	
+	/**
+	 * Gets the svg.
+	 *
+	 * @return the svg
+	 */
 	public File getSvg() {
 		String f = Util.getFilename(this, "svg");
 		if (new File(f).exists()) {
@@ -299,6 +321,11 @@ public class Page {
 		return null;
 	}
 
+	/**
+	 * Gets the thumbnail.
+	 *
+	 * @return the thumbnail
+	 */
 	public File getThumbnail() {
 		String f = Util.getFilename(this, "_thumbnail", "png");
 		if (new File(f).exists()) {
@@ -309,6 +336,11 @@ public class Page {
 		return null;
 	}
 
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -318,6 +350,12 @@ public class Page {
 		return result;
 	}
 
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

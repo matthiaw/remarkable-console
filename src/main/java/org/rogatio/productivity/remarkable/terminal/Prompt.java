@@ -18,7 +18,7 @@
 package org.rogatio.productivity.remarkable.terminal;
 
 /**
- * The Class Prompt provides a simple prompt to the terminal
+ * The Class Prompt provides a simple prompt to the terminal.
  */
 public class Prompt {
 

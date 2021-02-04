@@ -212,19 +212,23 @@ public class TerminalColor {
 	public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m"; // WHITE
 
 	/**
-	 * 
 	 * See
 	 * https://stackoverflow.com/questions/59373280/is-it-possible-to-color-java-output-in-terminal-using-rgb-or-hex-colors
-	 * 
-	 * @param r
-	 * @param g
-	 * @param b
-	 * @return
+	 *
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 * @return the foreground
 	 */
 	public static String getForeground(int r, int g, int b) {
 		return "\033[38;2;" + r + ";" + g + ";" + b + "m";
 	}
 
+	/**
+	 * Gets the random foreground color.
+	 *
+	 * @return the random foreground color
+	 */
 	public static String getRandomForegroundColor() {
 		
 		Random random = new Random();
@@ -236,14 +240,13 @@ public class TerminalColor {
 	}
 	
 	/**
-	 * 
 	 * See
 	 * https://stackoverflow.com/questions/59373280/is-it-possible-to-color-java-output-in-terminal-using-rgb-or-hex-colors
-	 * 
-	 * @param r
-	 * @param g
-	 * @param b
-	 * @return
+	 *
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 * @return the background
 	 */
 	public static String getBackground(int r, int g, int b) {
 		return "\033[48;2;" + r + ";" + g + ";" + b + "m";

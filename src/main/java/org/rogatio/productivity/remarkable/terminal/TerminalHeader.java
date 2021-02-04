@@ -25,13 +25,15 @@ import org.rogatio.productivity.remarkable.io.PropertiesCache;
 public class TerminalHeader {
 
 	/** The Constant HEADER. */
-	private static final String HEADER = "__________               _________                \r\n"
+	private static final String HEADER = 
+			  "__________               _________                \r\n"
 			+ "\\______   \\ ____   _____ \\_   ___ \\  ____   ____  \r\n"
 			+ " |       _// __ \\ /     \\/    \\  \\/ /  _ \\ /    \\ \r\n"
 			+ " |    |   \\  ___/|  Y Y  \\     \\___(  <_> )   |  \\\r\n"
 			+ " |____|_  /\\___  >__|_|  /\\______  /\\____/|___|  /\r\n"
 			+ "        \\/     \\/      \\/        \\/            \\/ \r\n";
 
+	/** The Constant HEADERFOOTER. */
 	private static final String HEADERFOOTER =
 
 			"RemCom - Remarkable Console (" + PropertiesCache.getInstance().getValue(PropertiesCache.VERSION)

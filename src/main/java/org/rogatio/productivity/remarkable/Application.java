@@ -87,6 +87,7 @@ public class Application {
 	/**
 	 * Builds the terminal.
 	 */
+	@SuppressWarnings("deprecation")
 	private static void buildTerminal() {
 		try {
 			// set up the completion
@@ -119,7 +120,7 @@ public class Application {
 	}
 
 	/**
-	 * Authenticate application against remarkable web application
+	 * Authenticate application against remarkable web application.
 	 *
 	 * @return the remarkable manager
 	 */
@@ -154,7 +155,7 @@ public class Application {
 	}
 
 	/**
-	 * Inits the application
+	 * Inits the application.
 	 *
 	 * @return the remarkable manager
 	 */

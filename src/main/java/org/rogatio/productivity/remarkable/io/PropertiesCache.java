@@ -31,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.Application;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 /**
  * The Class PropertiesCache.
  */
@@ -65,12 +67,14 @@ public class PropertiesCache {
 
 	/** The svgh. */
 	private final String SVGH = "#76b72a";
-	
+
+	/** The port. */
 	private final String PORT = "8090";
 
 	/** The svgb. */
 	private final String SVGB = "white";
 
+	/** The exportscale. */
 	private final String EXPORTSCALE = "1.8";
 
 	/** The svgg. */
@@ -82,6 +86,7 @@ public class PropertiesCache {
 	/** The Constant VERSION. */
 	public static final String VERSION = "version";
 
+	/** The Constant PNGEXPORTSCALE. */
 	public static final String PNGEXPORTSCALE = "png.export.scale";
 
 	/** The Constant DEVICETOKEN. */
@@ -116,11 +121,17 @@ public class PropertiesCache {
 
 	/** The Constant SSHPSWD. */
 	public static final String SSHPSWD = "ssh.password";
-	
+
+	/** The Constant SERVERPORT. */
 	public static final String SERVERPORT = "server.port";
-	
+
+	/** The Constant PDFHDEXPORT. */
 	public static final String PDFHDEXPORT = "export.pdf.hd";
+
+	/** The Constant PDFPAGESINGLE. */
 	public static final String PDFPAGESINGLE = "export.pdf.page";
+
+	/** The Constant PDFPAGESMERGED. */
 	public static final String PDFPAGESMERGED = "export.pdf.notebook";
 
 	/**
@@ -200,10 +211,16 @@ public class PropertiesCache {
 		return LazyHolder.INSTANCE;
 	}
 
+	/**
+	 * Sets the property.
+	 *
+	 * @param key   the key
+	 * @param value the value
+	 */
 	public void setProperty(String key, boolean value) {
-		configProp.setProperty(key, value+"");
+		configProp.setProperty(key, value + "");
 	}
-	
+
 	/**
 	 * Sets the property.
 	 *
@@ -245,18 +262,42 @@ public class PropertiesCache {
 		return false;
 	}
 
+	/**
+	 * Gets the double.
+	 *
+	 * @param key the key
+	 * @return the double
+	 */
 	public Double getDouble(String key) {
 		return Double.parseDouble(configProp.getProperty(key));
 	}
-	
+
+	/**
+	 * Gets the boolean.
+	 *
+	 * @param key the key
+	 * @return the boolean
+	 */
 	public Boolean getBoolean(String key) {
 		return Boolean.parseBoolean(configProp.getProperty(key));
 	}
-	
+
+	/**
+	 * Gets the int.
+	 *
+	 * @param key the key
+	 * @return the int
+	 */
 	public Integer getInt(String key) {
 		return Integer.parseInt(configProp.getProperty(key));
 	}
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param key the key
+	 * @return the value
+	 */
 	public String getValue(String key) {
 		return configProp.getProperty(key);
 	}

@@ -38,11 +38,23 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * The Class PageNavigationServlet.
+ */
 @WebServlet("/navigation")
 public class PageNavigationServlet extends BaseServlet {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5957420611509472672L;
 
+	/**
+	 * Do get.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -60,6 +72,12 @@ public class PageNavigationServlet extends BaseServlet {
 		);
 	}
 
+	/**
+	 * Ref left.
+	 *
+	 * @param p the p
+	 * @return the container tag
+	 */
 	private ContainerTag refLeft(Page p) {
 		try {
 			Content nb = p.getNotebook();
@@ -75,6 +93,12 @@ public class PageNavigationServlet extends BaseServlet {
 		}
 	}
 
+	/**
+	 * Ref right.
+	 *
+	 * @param p the p
+	 * @return the container tag
+	 */
 	private ContainerTag refRight(Page p) {
 		try {
 			Content nb = p.getNotebook();

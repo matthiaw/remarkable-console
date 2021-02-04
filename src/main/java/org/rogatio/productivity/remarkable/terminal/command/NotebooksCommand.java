@@ -26,29 +26,43 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
 
+/**
+ * The Class NotebooksCommand.
+ */
 @Command(name = "notebooks", description = "Handle Notebooks", version = "1.0", mixinStandardHelpOptions = true)
-public class NotebooksCommand implements Callable {
+public class NotebooksCommand implements Callable<Object> {
 
+	/** The parent. */
 	@ParentCommand
 	private CommandlineCommands parent;
 
+	/** The update. */
 	@Option(names = { "-u", "--update" }, description = "Update notebooks")
 	boolean update;
 
+	/** The download. */
 	@Option(names = { "-d", "--download" }, description = "Download notebooks")
 	boolean download;
 
+	/** The read. */
 	@Option(names = { "-r", "--read" }, description = "Read notebooks")
 	boolean read;
 
+	/** The export. */
 	@Option(names = { "-e", "--export" }, description = "Export notebooks")
 	boolean export;
 
+	/** The full. */
 	@Option(names = { "-f", "--full" }, description = "Download, Read and Export notebooks")
 	boolean full;
 
+	/**
+	 * Call.
+	 *
+	 * @return the void
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public Void call() throws IOException {
-		// System.out.print(Prompt.getPrefix(" "));
 		if (update) {
 			RemarkableManager.getInstance().updateContents();
 		}
@@ -61,7 +75,6 @@ public class NotebooksCommand implements Callable {
 		if (export || full) {
 			RemarkableManager.getInstance().exportNotebooks();
 		}
-		// System.out.println(Prompt.getPrefix(" "));
 		return null;
 	}
 
