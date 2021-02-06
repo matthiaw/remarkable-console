@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.rogatio.productivity.remarkable.RemarkableManager;
-import org.rogatio.productivity.remarkable.terminal.ServletAppender;
+import org.rogatio.productivity.remarkable.server.ServletAppender;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

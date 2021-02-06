@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package org.rogatio.productivity.remarkable.terminal;
+package org.rogatio.productivity.remarkable.server;
 
 import java.io.PrintWriter;
 import java.io.Serializable;

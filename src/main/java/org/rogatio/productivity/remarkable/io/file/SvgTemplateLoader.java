@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class SvGTemplateLoader.
  */
-public class SvGTemplateLoader {
+public class SvgTemplateLoader {
 
 	/** The Constant TYPE_SVG. */
 	public final static String TYPE_SVG = ".svg";
@@ -54,7 +54,7 @@ public class SvGTemplateLoader {
 	 */
 	private static class LazyHolder {
 		/** The Constant INSTANCE. */
-		private static final SvGTemplateLoader INSTANCE = new SvGTemplateLoader();
+		private static final SvgTemplateLoader INSTANCE = new SvgTemplateLoader();
 	}
 
 	/**
@@ -62,14 +62,14 @@ public class SvGTemplateLoader {
 	 *
 	 * @return single instance of SvGTemplateLoader
 	 */
-	public static SvGTemplateLoader getInstance() {
+	public static SvgTemplateLoader getInstance() {
 		return LazyHolder.INSTANCE;
 	}
 
 	/**
 	 * Instantiates a new sv G template loader.
 	 */
-	private SvGTemplateLoader() {
+	private SvgTemplateLoader() {
 
 		ObjectMapper mapper = new ObjectMapper();
 

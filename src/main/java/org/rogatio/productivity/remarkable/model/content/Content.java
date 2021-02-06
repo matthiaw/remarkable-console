@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.productivity.remarkable.io.file.SvGTemplateLoader;
+import org.rogatio.productivity.remarkable.io.file.SvgTemplateLoader;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 
 /**
@@ -174,7 +174,7 @@ public class Content {
 	 * @return the template file
 	 */
 	public File getTemplateFile(Page page) {
-		return SvGTemplateLoader.getInstance().getFile(getTemplateName(page));
+		return SvgTemplateLoader.getInstance().getFile(getTemplateName(page));
 	}
 
 	/**

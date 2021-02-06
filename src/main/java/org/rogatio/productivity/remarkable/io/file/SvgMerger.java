@@ -61,7 +61,7 @@ public class SvgMerger {
 	 * @param target   the target
 	 */
 	public static void merge(Page page, String template, File target) {
-		File templateFile = SvGTemplateLoader.getInstance().getFile(template);
+		File templateFile = SvgTemplateLoader.getInstance().getFile(template);
 		File pageFile = new File(Util.getFilename(page, "svg"));
 		String no = String.format("%03d", page.getPageNumber());
 		String title = page.getNotebook().getName() + " - Page " + no;

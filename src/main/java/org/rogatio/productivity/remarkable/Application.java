@@ -97,10 +97,9 @@ public class Application {
 			LineReader reader = LineReaderBuilder.builder().terminal(terminal)
 					.completer(new PicocliJLineCompleter(cmd.getCommandSpec())).parser(new DefaultParser()).build();
 			commands.setReader(reader);
-			// String prompt = "prompt> ";
 			String rightPrompt = null;
 
-			// start the shell and process input until the user quits with Ctl-D
+			// start the shell and process input until the user quits with Ctrl-D
 			String line;
 			while (true) {
 				try {

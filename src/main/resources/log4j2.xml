@@ -25,10 +25,10 @@
 
 			<!-- <AppenderRef ref="ConsoleAppender" /> -->
 
-			<!-- <AppenderRef ref="FileAppender" /> -->
+			<AppenderRef ref="FileAppender" />
 
 			<AppenderRef ref="TerminalAppender" />
-			
+
 			<AppenderRef ref="ServletAppender" />
 
 		</Root>

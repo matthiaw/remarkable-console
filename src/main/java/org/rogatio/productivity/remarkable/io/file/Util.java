@@ -270,9 +270,6 @@ public class Util {
 	public static void createSvg(Content notebook) {
 		for (Page page : notebook.getPages()) {
 
-//			SvgDocument.createPortrait(page);
-//			SvgDocument.createLandscape(page);
-
 			String orientation = page.getNotebook().getContentData().getOrientation();
 			if (orientation.equals("portrait")) {
 				SvgDocument.createPortrait(page);
@@ -372,12 +369,7 @@ public class Util {
 				ZipEntry entry = entries.nextElement();
 
 				if (entry.getName().endsWith("." + ending)) {
-					// System.out.println(entry.getName());
 					InputStream inputStream = zf.getInputStream(entry);
-//					StringWriter writer = new StringWriter();
-//					IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8.name());
-
-					// System.out.println("!!"+writer.toString());
 					return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 				}
 			}
