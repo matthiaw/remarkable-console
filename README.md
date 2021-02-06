@@ -64,7 +64,7 @@ To excecute the download, the in-memory-mapping (reading) and the export call al
 RM > notebooks -d -r -e
 ```
 
-to start the embedded webserver use
+to start the embedded webserver at http://localhost:8090/ use
 
 ```
 RM > server --start
