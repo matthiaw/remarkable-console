@@ -48,7 +48,7 @@ RM > [Copy to this line One-Time-Code]
 ```
 
 ### Download svg templates through SSH
-Add into application.properties the remarkable-ip and the  remarkable-password. This could be found in the remarkable at Settings > About > Copyrights and licenses > General information (scroll down)
+Add into `application.properties` the remarkable-ip and the remarkable-password. This could be found in the remarkable at *Settings > About > Copyrights and licenses > General information (scroll down)*
 
 ```
 ssh.host = xxx.xxx.xxx.xx
