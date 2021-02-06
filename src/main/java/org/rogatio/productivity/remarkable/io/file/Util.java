@@ -19,9 +19,13 @@ package org.rogatio.productivity.remarkable.io.file;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -35,10 +39,12 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
 import org.apache.batik.transcoder.TranscoderException;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.PropertiesCache;
@@ -63,11 +69,13 @@ public class Util {
 
 	/** The Constant EXPORT_PDF_HD. */
 	private static final boolean EXPORT_PDF_HD = PropertiesCache.getInstance().getBoolean(PropertiesCache.PDFHDEXPORT);
-	
+
+	private static final String TMP_DIR = "temp";
+
 	/** The Constant EXPORT_PDF_ALL. */
 	private static final boolean EXPORT_PDF_ALL = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESMERGED);
-	
+
 	/** The Constant EXPORT_PDF_PAGES. */
 	private static final boolean EXPORT_PDF_PAGES = PropertiesCache.getInstance()
 			.getBoolean(PropertiesCache.PDFPAGESINGLE);
@@ -107,7 +115,7 @@ public class Util {
 	/**
 	 * List files.
 	 *
-	 * @param dir the dir
+	 * @param dir    the dir
 	 * @param ending the ending
 	 * @return the array list
 	 */
@@ -150,7 +158,7 @@ public class Util {
 	/**
 	 * Gets the filename.
 	 *
-	 * @param page the page
+	 * @param page   the page
 	 * @param suffix the suffix
 	 * @param ending the ending
 	 * @return the filename
@@ -172,7 +180,7 @@ public class Util {
 	/**
 	 * Gets the filename.
 	 *
-	 * @param page the page
+	 * @param page   the page
 	 * @param ending the ending
 	 * @return the filename
 	 */
@@ -241,7 +249,7 @@ public class Util {
 	 * Creates the png.
 	 *
 	 * @param notebook the notebook
-	 * @param scale the scale
+	 * @param scale    the scale
 	 */
 	public static void createPng(Content notebook, double scale) {
 		for (Page page : notebook.getPages()) {
@@ -303,7 +311,7 @@ public class Util {
 	/**
 	 * Img to base 64 string.
 	 *
-	 * @param img the img
+	 * @param img        the img
 	 * @param formatName the format name
 	 * @return the string
 	 */
@@ -323,7 +331,7 @@ public class Util {
 	 * Adds the meta to zip.
 	 *
 	 * @param document the document
-	 * @param zip the zip
+	 * @param zip      the zip
 	 */
 	public static void addMetaToZip(ContentMetaData document, File zip) {
 		try {
@@ -350,7 +358,7 @@ public class Util {
 	 * Gets the file content.
 	 *
 	 * @param zipFile the zip file
-	 * @param ending the ending
+	 * @param ending  the ending
 	 * @return the file content
 	 */
 	public static String getFileContent(File zipFile, String ending) {
@@ -386,6 +394,66 @@ public class Util {
 					e.printStackTrace();
 				}
 			}
+		}
+
+		return null;
+	}
+
+	public static void deleteTemporaryDirectory() {
+		deleteDirectory(new File(TMP_DIR));
+	}
+
+	public static void deleteDirectory(File directory) {
+		try {
+			FileUtils.deleteDirectory(directory);
+		} catch (IOException e) {
+		}
+	}
+
+	/**
+	 * See https://github.com/jlarriba/jrmapi/blob/master/src/main/java/es/jlarriba/jrmapi/Utils.java 
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static File createZipDirectory(String id) {
+
+		File dir = new File(TMP_DIR);
+
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		try {
+			File content = new File(TMP_DIR + File.separatorChar + id + ".content");
+
+			content.createNewFile();
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(content));
+			writer.write("{}");
+			writer.close();
+
+			String sourceFile = TMP_DIR + File.separatorChar + id + ".content";
+			FileOutputStream fos = new FileOutputStream(TMP_DIR + File.separatorChar + id + ".zip");
+			ZipOutputStream zipOut = new ZipOutputStream(fos);
+			File fileToZip = new File(sourceFile);
+			FileInputStream fis = new FileInputStream(fileToZip);
+			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+			zipOut.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while ((length = fis.read(bytes)) >= 0) {
+				zipOut.write(bytes, 0, length);
+			}
+
+			zipOut.close();
+			fis.close();
+			fos.close();
+
+			return new File(TMP_DIR + File.separatorChar + id + ".zip");
+		} catch (IOException e) {
+			logger.error("Problem creating ZIP file: ", e);
 		}
 
 		return null;

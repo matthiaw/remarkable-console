@@ -46,6 +46,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class RemarkableManager provides the main functions for the remarkable
@@ -120,7 +121,11 @@ public class RemarkableManager {
 		this.readContents();
 
 	}
-
+	
+	public void createDir(String name, String parentID) {
+		client.createDir(name, parentID, userToken);
+	}
+	
 	/**
 	 * Download svg background templates through ssh connection.
 	 */
@@ -212,7 +217,7 @@ public class RemarkableManager {
 	 * @return the notebooks
 	 */
 	public List<Content> getContents() {
-		return contents;// new ArrayList<>(notebooks.values());
+		return contents;
 	}
 
 	/**
@@ -242,7 +247,6 @@ public class RemarkableManager {
 
 		for (Content notebook : contents) {
 			if (notebook.getType() == Type.DOCUMENT) {
-				// System.out.println(notebook.getName());
 				files.add(notebook);
 			}
 		}
@@ -280,111 +284,6 @@ public class RemarkableManager {
 		return null;
 	}
 
-//	public void readContent(File zipFile) {
-//
-//		ObjectMapper objectMapper = new ObjectMapper();
-//
-//		try {
-//
-//			String metaJson = Util.getFileContent(zipFile, "meta");
-//			System.out.println(metaJson);
-//			ContentMetaData metaData = objectMapper.readValue(metaJson, ContentMetaData.class);
-//
-//			Content content = new Content(metaData);
-//			
-//			List<Page> pages = getPages(zipFile);
-//			content.setPages(pages);
-//
-//			String contentJson = Util.getFileContent(zipFile, "content");
-//			JSONObject contentData = new JSONObject(contentJson);
-//			
-//			int coverPageNumber = contentData.getInt("coverPageNumber");
-//			boolean dummyDocument = contentData.getBoolean("contentData");
-//			JSONObject extraMetadata = contentData.getJSONObject("extraMetadata");
-//			
-//			for (String key : extraMetadata.keySet()) {
-//				System.out.println(extraMetadata.getString(key));
-//			}
-//			
-//			String pageJson = Util.getFileContent(zipFile, "pagedata");
-//			ArrayList<String> listPageLayouts = getPageData(pageJson);
-//			content.setTemplateNames(listPageLayouts);
-//			// rNotebook.setTemplateNames(list);
-////			logger.info("Found '" + list.size() + "' templates (default is set as '"
-////					+ rNotebook.getDefaultTemplate() + "')");
-//
-//			
-//			
-//		} catch (JsonMappingException e) {
-//		} catch (JsonProcessingException e) {
-//		}
-//
-//	}
-//
-//	public ArrayList<String> getPageData(String pagedata) {
-//		Scanner s = new Scanner(pagedata);
-//		ArrayList<String> list = new ArrayList<String>();
-//		while (s.hasNext()) {
-//			list.add(s.nextLine());
-//		}
-//		s.close();
-//		return list;
-//	}
-//
-//	private List<Page> getPages(File file) {
-//		ZipFile zf = null;
-//
-//		List<Page> pages = new ArrayList<Page>();
-//
-//		try {
-//			zf = new ZipFile(file.getAbsolutePath());
-//
-//			String notebookID = file.getName().replace(".zip", "");
-//
-//			Enumeration<? extends ZipEntry> entries = zf.entries();
-//
-//			// iterate through all files inside zip
-//			while (entries.hasMoreElements()) {
-//				ZipEntry entry = entries.nextElement();
-//
-//				if (entry.getName().endsWith(".rm")) {
-//					InputStream in = zf.getInputStream(zf.getEntry(entry.getName()));
-//					// read byte representation of page
-//					byte[] bytes = Util.streamToBytes(in);
-//					// extract page number from filename
-//					String no = entry.getName().replace(notebookID + "/", "").replace(".rm", "");
-//					// parse number to int
-//					int number = Integer.parseInt(no);
-//
-//					if (bytes.length == 0) {
-//						logger.error("Could not read content of '" + entry.getName() + "'");
-//					} else {
-//						// Instantiates page
-//						Page page = new Page(number, bytes);
-//
-//						// add page
-//						pages.add(page);
-//
-//						logger.info("Load " + page);
-//					}
-//				}
-//			}
-//
-//			return pages;
-//		} catch (IOException e) {
-//			// logger.error("Error extracting file "+fileWithPathInsideZip +" from
-//			// "+zipFile.getName());
-//		} finally {
-//			try {
-//				if (zf != null) {
-//					zf.close();
-//				}
-//			} catch (IOException e) {
-//			}
-//		}
-//		return null;
-//	}
-
 	/**
 	 * Read content.
 	 *
@@ -407,6 +306,7 @@ public class RemarkableManager {
 			Content rNotebook = null;
 
 			String notebookID = null;
+
 			// iterate through all files inside zip
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = entries.nextElement();
@@ -675,7 +575,7 @@ public class RemarkableManager {
 		if (zip.exists()) {
 			this.readContent(zip);
 		} else {
-			logger.error("Content '"+zip.toString()+"' not exists and could not be read.");
+			logger.error("Content '" + zip.toString() + "' not exists and could not be read.");
 		}
 	}
 
@@ -751,26 +651,6 @@ public class RemarkableManager {
 			return true;
 		}
 
-//		for (int i = 0; i < oldContentMetaDatas.length; i++) {
-//			ContentMetaData oldData = oldContentMetaDatas[i];
-//
-////			boolean status = isOutdated(oldData);
-////			if (status==true) {
-////				return true;
-////			}
-//			for (int j = 0; j < newContentMetaDatas.length; j++) {
-//				ContentMetaData newData = newContentMetaDatas[j];
-//
-//				if (oldData.iD.equals(newData.iD)) {
-//					if (oldData.version != newData.version) {
-//						logger.debug("Document '" + oldData.vissibleName + "' is outdated (version=" + oldData.version
-//								+ " -> " + newData.version + ")");
-//						return true;
-//					}
-//				}
-//			}
-//		}
-
 		return false;
 	}
 
@@ -792,16 +672,6 @@ public class RemarkableManager {
 	public ContentMetaData[] downloadMetaDatas(boolean blobUrl) {
 		try {
 			ContentMetaData[] metadataNotebooks = client.listMetaDataNotebooks(userToken, blobUrl);
-
-//			if (!blobUrl) {
-//				for (MetaDataNotebook metaDataNotebook : metadataNotebooks) {
-//					saveMetaDataNotebook(metaDataNotebook);
-//				}
-//				logger.info("Download Notebook MetaData (" + metadataNotebooks.length + " entries) with blob");
-//			} else {
-//				logger.info("Download Notebook MetaData (" + metadataNotebooks.length + " entries)");
-//			}
-
 			return metadataNotebooks;
 		} catch (IOException e) {
 			logger.error("Error getting meta-data notebooks", e);
