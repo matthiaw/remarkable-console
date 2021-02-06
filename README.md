@@ -64,6 +64,12 @@ To excecute the download, the in-memory-mapping (reading) and the export call al
 RM > notebooks -d -r -e
 ```
 
+to start the embedded webserver use
+
+```
+RM > server --start
+```
+
 The console could be closed by
 
 ```
