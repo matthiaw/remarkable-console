@@ -19,6 +19,9 @@ package org.rogatio.productivity.remarkable.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,11 +31,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.io.web.RequestClient;
+import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 import org.rogatio.productivity.remarkable.model.web.Credentials;
+import org.rogatio.productivity.remarkable.model.web.DeleteContent;
 import org.rogatio.productivity.remarkable.model.web.UploadRequest;
 import org.rogatio.productivity.remarkable.model.web.UploadResponse;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -168,53 +174,64 @@ public class RemarkableClient extends RequestClient {
 		return mapper.readValue(json, ContentMetaData[].class);
 	}
 
-	public void createDir(String name, String parentID, String userToken) {
-		String id = UUID.randomUUID().toString();
-		UploadRequest dr = new UploadRequest("CollectionType");
-
-		List<Object> uploadRequest = new ArrayList<>();
-		uploadRequest.add(dr);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			String rdata = objectMapper.writeValueAsString(uploadRequest);
-			String response = put(UPLOAD_REQUEST, PREFIXAUTHTOKEN + " " + userToken, rdata);
-
-			System.out.println(response);
-
-			ObjectMapper mapper = new ObjectMapper();
-			UploadResponse[] responses = mapper.readValue(response, UploadResponse[].class);
-
-			put(responses[0].blobURLPut, PREFIXAUTHTOKEN + " " + userToken, Util.createZipDirectory(id));
-
-			ContentMetaData metadataDoc = new ContentMetaData();
-			metadataDoc.iD = id;
-			metadataDoc.modifiedClient = new Date();
-			metadataDoc.parent = parentID;
-			metadataDoc.type = "CollectionType";
-			metadataDoc.version = 1;
-			metadataDoc.vissibleName = name;
-
-			List<Object> uploadMetadataDoc = new ArrayList<>();
-			uploadMetadataDoc.add(metadataDoc);
-
-			String json = mapper.writeValueAsString(uploadMetadataDoc);
-
-			put(UPDATE_STATUS, PREFIXAUTHTOKEN + " " + userToken, json);
-
-			Util.deleteTemporaryDirectory();
-
-		} catch (JsonProcessingException e) {
-			logger.error("Error creating directory on remarkable", e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Error creating directory on remarkable", e);
-			e.printStackTrace();
-		} catch (Exception e) {
-			logger.error("Error creating directory on remarkable", e);
-			e.printStackTrace();
-		}
-
-	}
-
+//	public void createDir(String name, String parentID, String userToken) {
+//		String id = UUID.randomUUID().toString();
+//		UploadRequest dr = new UploadRequest("CollectionType");
+//
+//		List<Object> uploadRequest = new ArrayList<>();
+//		uploadRequest.add(dr);
+//
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		try {
+//			String rdata = objectMapper.writeValueAsString(uploadRequest);
+//			String response = put(UPLOAD_REQUEST, PREFIXAUTHTOKEN + " " + userToken, rdata);
+//
+//			ObjectMapper mapper = new ObjectMapper();
+//			UploadResponse[] responses = mapper.readValue(response, UploadResponse[].class);
+//
+//			putStream(responses[0].blobURLPut, PREFIXAUTHTOKEN + " " + userToken, Util.createZipDirectory(id));
+//
+//			ContentMetaData metadataDoc = new ContentMetaData();
+//			metadataDoc.iD = id;
+//			
+//			//LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'"))
+//			
+//			metadataDoc.modifiedClient = new Date();
+//			metadataDoc.parent = parentID;
+//			metadataDoc.type = "CollectionType";
+//			metadataDoc.version = 1;
+//			metadataDoc.vissibleName = name;
+//			metadataDoc.currentPage = null;
+//			
+//			List<Object> uploadMetadataDoc = new ArrayList<>();
+//			uploadMetadataDoc.add(metadataDoc);
+//
+//			put(UPDATE_STATUS, PREFIXAUTHTOKEN + " " + userToken, uploadMetadataDoc);
+//
+//			Util.deleteTemporaryDirectory();
+//
+//		} catch (JsonProcessingException e) {
+//			logger.error("Error creating directory on remarkable", e);
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			logger.error("Error creating directory on remarkable", e);
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			logger.error("Error creating directory on remarkable", e);
+//			e.printStackTrace();
+//		}
+//
+//	}
+	
+	 public void deleteEntry(String id, int version, String userToken) {
+	        DeleteContent deleteDoc = new DeleteContent();
+	        deleteDoc.version = version;
+	        deleteDoc.ID = id;
+	        
+	        List<Object> uploadDeleteDoc = new ArrayList<>();
+	        uploadDeleteDoc.add(deleteDoc);
+	        
+	        put(DELETE, PREFIXAUTHTOKEN + " " + userToken, uploadDeleteDoc);
+	    }
+	
 }

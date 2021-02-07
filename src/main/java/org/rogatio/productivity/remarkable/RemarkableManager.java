@@ -120,11 +120,12 @@ public class RemarkableManager {
 		this.readContents();
 
 	}
-	
-	public void createDir(String name, String parentID) {
-		client.createDir(name, parentID, userToken);
-	}
-	
+
+	// DO NOT USE. CREATES BUGGED FOLDER
+//	public void createDir(String name, String parentID) {
+//		client.createDir(name, parentID, userToken);
+//	}
+
 	/**
 	 * Download svg background templates through ssh connection.
 	 */
@@ -291,6 +292,12 @@ public class RemarkableManager {
 	public void readContent(File file) {
 
 		String contentJson = Util.getFileContent(file, "content");
+
+		if (contentJson == null) {
+			logger.warn("Stop reading content because content could not be loaded from '" + file + "'");
+			return;
+		}
+
 		ContentData contentData = new ContentData(contentJson);
 
 		ZipFile zf = null;
@@ -397,6 +404,10 @@ public class RemarkableManager {
 			}
 		}
 
+	}
+
+	public void deleteContent(String id, int version) {
+		client.deleteEntry(id, version, userToken);
 	}
 
 	/**

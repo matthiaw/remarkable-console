@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ContentMetaData extends BaseObject {
 
-	/** The i D. */
+	/** The iD. */
 	@JsonProperty("ID")
 	public String iD;
 
@@ -68,7 +68,7 @@ public class ContentMetaData extends BaseObject {
 
 	/** The current page. */
 	@JsonProperty("CurrentPage")
-	public int currentPage;
+	public Integer currentPage;
 
 	/** The bookmarked. */
 	@JsonProperty("Bookmarked")

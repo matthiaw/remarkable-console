@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,14 +33,23 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class RequestClient.
@@ -81,8 +91,8 @@ public class RequestClient {
 		con.setRequestProperty("Authorization", authToken);
 		con.setDoOutput(true);
 		this.sendData(con, data);
-		System.out.println(con.getResponseCode());
-		System.out.println(con.getResponseMessage());
+//		System.out.println(con.getResponseCode());
+//		System.out.println(con.getResponseMessage());
 		if (con.getResponseCode() == 200) {
 			logger.info("Put Request at " + putUrl);
 			return this.read(con.getInputStream());
@@ -102,6 +112,7 @@ public class RequestClient {
 		con.setRequestProperty("Authorization", authToken);
 		con.setDoOutput(true);
 
+		// System.out.println(fileContents.length);
 		this.sendData(con, fileContents);
 		System.out.println(con.getResponseCode());
 		System.out.println(con.getResponseMessage());
@@ -111,6 +122,59 @@ public class RequestClient {
 		} else {
 			return this.read(con.getErrorStream());
 		}
+	}
+
+	public String put(String url, String token, List<Object> payload) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		//DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
+		mapper.setDateFormat(df);
+
+		String json = "";
+		try {
+			json = mapper.writeValueAsString(payload);
+			System.out.println(json);
+		} catch (JsonProcessingException e) {
+		}
+
+		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofString(json))
+				.header("Authorization", token).build();
+		return sendRequest(request);
+	}
+
+	public String putStream(String url, String token, File file) {
+		try {
+			HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofFile(file.toPath()))
+					.header("Authorization", token).build();
+			return sendRequest(request);
+		} catch (FileNotFoundException e) {
+			logger.error("file does not exist", e);
+		}
+		return "";
+	}
+
+	private String sendRequest(HttpRequest request) {
+		String res = null;
+
+		try {
+			logger.debug(request.uri());
+			logger.debug(Arrays.asList(request.headers()));
+			HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			logger.debug(response.statusCode());
+			if (response.statusCode() == 200) {
+				res = response.body();
+			} else {
+				logger.warn(response.body());
+			}
+		} catch (IOException | InterruptedException e) {
+			logger.error("Error while launching request", e);
+		}
+
+		return res;
 	}
 
 	/**

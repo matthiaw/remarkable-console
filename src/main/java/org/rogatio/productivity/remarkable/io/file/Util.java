@@ -24,14 +24,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -375,15 +381,16 @@ public class Util {
 			}
 
 		} catch (ZipException e) {
-			e.printStackTrace();
+			logger.error("Error receiving content in '" + zipFile + "'", e);
+			// e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error receiving content in '" + zipFile + "'", e);
 		} finally {
 			if (zf != null) {
 				try {
 					zf.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error("Error receiving content in '" + zipFile + "'", e);
 				}
 			}
 		}
@@ -403,7 +410,8 @@ public class Util {
 	}
 
 	/**
-	 * See https://github.com/jlarriba/jrmapi/blob/master/src/main/java/es/jlarriba/jrmapi/Utils.java 
+	 * See
+	 * https://github.com/jlarriba/jrmapi/blob/master/src/main/java/es/jlarriba/jrmapi/Utils.java
 	 * 
 	 * @param id
 	 * @return
@@ -417,35 +425,53 @@ public class Util {
 		}
 
 		try {
-			File content = new File(TMP_DIR + File.separatorChar + id + ".content");
+			String sourceFile = TMP_DIR + File.separatorChar + id + ".content";
 
+			File content = new File(sourceFile);
 			content.createNewFile();
 
 			BufferedWriter writer = new BufferedWriter(new FileWriter(content));
 			writer.write("{}");
 			writer.close();
 
-			String sourceFile = TMP_DIR + File.separatorChar + id + ".content";
-			FileOutputStream fos = new FileOutputStream(TMP_DIR + File.separatorChar + id + ".zip");
-			ZipOutputStream zipOut = new ZipOutputStream(fos);
-			File fileToZip = new File(sourceFile);
-			FileInputStream fis = new FileInputStream(fileToZip);
-			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-			zipOut.putNextEntry(zipEntry);
+			String zipFileName = TMP_DIR + File.separatorChar + id + ".zip";
 
-			byte[] bytes = new byte[1024];
-			int length;
-			while ((length = fis.read(bytes)) >= 0) {
-				zipOut.write(bytes, 0, length);
-			}
+//			System.out.println(sourceFile);
+//			System.out.println(zipFileName);
 
-			zipOut.close();
-			fis.close();
-			fos.close();
+//			FileOutputStream fos = new FileOutputStream(zipFile);
+//			ZipOutputStream zipOut = new ZipOutputStream(fos);
+//			File fileToZip = new File(sourceFile);
+//			FileInputStream fis = new FileInputStream(zipFile);
+//			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+//			zipOut.putNextEntry(zipEntry);
 
-			return new File(TMP_DIR + File.separatorChar + id + ".zip");
+//			byte[] bytes = new byte[1024];
+//			int length;
+//			while ((length = fis.read(bytes)) >= 0) {
+//				zipOut.write(bytes, 0, length);
+//			}
+
+//			zipOut.close();
+//			fis.close();
+//			fos.close();
+
+			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zipFileName);
+
+			ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+
+			zipFile.addFile(content, parameters);
+
+			return new File(zipFileName);
 		} catch (IOException e) {
 			logger.error("Problem creating ZIP file: ", e);
+			e.printStackTrace();
+		} catch (net.lingala.zip4j.exception.ZipException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
 		}
 
 		return null;
