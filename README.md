@@ -27,8 +27,9 @@ Details could be found at [https://remarkablewiki.com/start](https://remarkablew
 Install the console with maven
 
 ```sh
-$ mvn install
+$ mvn clean install
 ```
+Check with `mvn --version` has `JAVA_HOME` greater Java 1.8 (see [Details](https://subscription.packtpub.com/book/application_development/9781785286124/1/ch01lvl1sec13/changing-the-jdk-used-by-maven)). If you not use a high java version with maven build, the error `class file has wrong version 55.0, should be 52.0` occurs.
 
 ## First Startup
 When the application is started with 
