@@ -29,7 +29,7 @@ Install the console with maven
 ```sh
 $ mvn clean install
 ```
-Check that `mvn --version` has `JAVA_HOME` greater Java 1.8 (see [Details](https://subscription.packtpub.com/book/application_development/9781785286124/1/ch01lvl1sec13/changing-the-jdk-used-by-maven)). 
+Check with `mvn --version` has `JAVA_HOME` greater Java 1.8 (see [Details](https://subscription.packtpub.com/book/application_development/9781785286124/1/ch01lvl1sec13/changing-the-jdk-used-by-maven)). 
 
 ## First Startup
 When the application is started with 
