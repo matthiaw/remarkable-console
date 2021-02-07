@@ -46,7 +46,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 /**
  * The Class RemarkableManager provides the main functions for the remarkable

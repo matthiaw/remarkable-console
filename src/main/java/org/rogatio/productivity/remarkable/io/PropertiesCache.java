@@ -31,8 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.productivity.remarkable.Application;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 /**
  * The Class PropertiesCache.
  */
