@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration
-	packages="org.rogatio.productivity.remarkable" status="INFO">
+	packages="org.rogatio.remarkable.console" status="INFO">
 	<Appenders>
 		<Console name="ConsoleAppender" target="SYSTEM_OUT">
 			<PatternLayout
