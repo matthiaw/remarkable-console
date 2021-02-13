@@ -19,25 +19,15 @@ package org.rogatio.productivity.remarkable.io.file;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -45,7 +35,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 
@@ -61,9 +50,6 @@ import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.itextpdf.text.DocumentException;
-
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.util.Zip4jConstants;
 
 /**
  * The Class Util.
@@ -338,7 +324,7 @@ public class Util {
 	 */
 	public static void addMetaToZip(ContentMetaData document, File zip) {
 		try {
-			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zip);
+			net.lingala.zip4j.ZipFile zipFile = new net.lingala.zip4j.ZipFile(zip);
 
 			File fileToZip = File.createTempFile(document.iD + "-", ".meta");
 
@@ -346,14 +332,15 @@ public class Util {
 			objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 			objectMapper.writeValue(fileToZip, document);
 
-			ZipParameters parameters = new ZipParameters();
-			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+//			ZipParameters parameters = new ZipParameters();
+//			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+//			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 
-			zipFile.addFile(fileToZip, parameters);
+			
+			zipFile.addFile(fileToZip);
 		} catch (ZipException e) {
 		} catch (IOException e) {
-		} catch (net.lingala.zip4j.exception.ZipException e) {
+//		} catch (net.lingala.zip4j.exception.ZipException e) {
 		}
 	}
 
@@ -409,72 +396,72 @@ public class Util {
 		}
 	}
 
-	/**
-	 * See
-	 * https://github.com/jlarriba/jrmapi/blob/master/src/main/java/es/jlarriba/jrmapi/Utils.java
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public static File createZipDirectory(String id) {
-
-		File dir = new File(TMP_DIR);
-
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-
-		try {
-			String sourceFile = TMP_DIR + File.separatorChar + id + ".content";
-
-			File content = new File(sourceFile);
-			content.createNewFile();
-
-			BufferedWriter writer = new BufferedWriter(new FileWriter(content));
-			writer.write("{}");
-			writer.close();
-
-			String zipFileName = TMP_DIR + File.separatorChar + id + ".zip";
-
-//			System.out.println(sourceFile);
-//			System.out.println(zipFileName);
-
-//			FileOutputStream fos = new FileOutputStream(zipFile);
-//			ZipOutputStream zipOut = new ZipOutputStream(fos);
-//			File fileToZip = new File(sourceFile);
-//			FileInputStream fis = new FileInputStream(zipFile);
-//			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-//			zipOut.putNextEntry(zipEntry);
-
-//			byte[] bytes = new byte[1024];
-//			int length;
-//			while ((length = fis.read(bytes)) >= 0) {
-//				zipOut.write(bytes, 0, length);
-//			}
-
-//			zipOut.close();
-//			fis.close();
-//			fos.close();
-
-			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zipFileName);
-
-			ZipParameters parameters = new ZipParameters();
-			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-
-			zipFile.addFile(content, parameters);
-
-			return new File(zipFileName);
-		} catch (IOException e) {
-			logger.error("Problem creating ZIP file: ", e);
-			e.printStackTrace();
-		} catch (net.lingala.zip4j.exception.ZipException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-		}
-
-		return null;
-	}
+//	/**
+//	 * See
+//	 * https://github.com/jlarriba/jrmapi/blob/master/src/main/java/es/jlarriba/jrmapi/Utils.java
+//	 * 
+//	 * @param id
+//	 * @return
+//	 */
+//	public static File createZipDirectory(String id) {
+//
+//		File dir = new File(TMP_DIR);
+//
+//		if (!dir.exists()) {
+//			dir.mkdirs();
+//		}
+//
+//		try {
+//			String sourceFile = TMP_DIR + File.separatorChar + id + ".content";
+//
+//			File content = new File(sourceFile);
+//			content.createNewFile();
+//
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(content));
+//			writer.write("{}");
+//			writer.close();
+//
+//			String zipFileName = TMP_DIR + File.separatorChar + id + ".zip";
+//
+////			System.out.println(sourceFile);
+////			System.out.println(zipFileName);
+//
+////			FileOutputStream fos = new FileOutputStream(zipFile);
+////			ZipOutputStream zipOut = new ZipOutputStream(fos);
+////			File fileToZip = new File(sourceFile);
+////			FileInputStream fis = new FileInputStream(zipFile);
+////			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+////			zipOut.putNextEntry(zipEntry);
+//
+////			byte[] bytes = new byte[1024];
+////			int length;
+////			while ((length = fis.read(bytes)) >= 0) {
+////				zipOut.write(bytes, 0, length);
+////			}
+//
+////			zipOut.close();
+////			fis.close();
+////			fos.close();
+//
+//			net.lingala.zip4j.core.ZipFile zipFile = new net.lingala.zip4j.core.ZipFile(zipFileName);
+//
+//			ZipParameters parameters = new ZipParameters();
+//			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+//			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+//
+//			zipFile.addFile(content, parameters);
+//
+//			return new File(zipFileName);
+//		} catch (IOException e) {
+//			logger.error("Problem creating ZIP file: ", e);
+//			e.printStackTrace();
+//		} catch (net.lingala.zip4j.exception.ZipException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} finally {
+//		}
+//
+//		return null;
+//	}
 
 }

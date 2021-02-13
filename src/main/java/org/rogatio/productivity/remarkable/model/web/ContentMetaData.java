@@ -44,15 +44,15 @@ public class ContentMetaData extends BaseObject {
 
 	/** The success. */
 	@JsonProperty("Success")
-	public boolean success;
+	public Boolean success;
 
 	/** The blob URL get. */
 	@JsonProperty("BlobURLGet")
-	public String blobURLGet;
+	public String blobURLGet = null;
 
 	/** The blob URL get expires. */
 	@JsonProperty("BlobURLGetExpires")
-	public Date blobURLGetExpires;
+	public Date blobURLGetExpires = null;
 
 	/** The modified client. */
 	@JsonProperty("ModifiedClient")
@@ -68,13 +68,13 @@ public class ContentMetaData extends BaseObject {
 
 	/** The current page. */
 	@JsonProperty("CurrentPage")
-	public Integer currentPage;
+	public Integer currentPage = null;
 
 	/** The bookmarked. */
 	@JsonProperty("Bookmarked")
-	public boolean bookmarked;
+	public Boolean bookmarked = null;
 
 	/** The parent. */
 	@JsonProperty("Parent")
-	public String parent;
+	public String parent = null;
 }

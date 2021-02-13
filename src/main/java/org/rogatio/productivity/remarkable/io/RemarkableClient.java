@@ -19,28 +19,32 @@ package org.rogatio.productivity.remarkable.io;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.productivity.remarkable.io.file.Util;
 import org.rogatio.productivity.remarkable.io.web.RequestClient;
-import org.rogatio.productivity.remarkable.model.content.Content;
 import org.rogatio.productivity.remarkable.model.web.ContentMetaData;
 import org.rogatio.productivity.remarkable.model.web.Credentials;
-import org.rogatio.productivity.remarkable.model.web.DeleteContent;
-import org.rogatio.productivity.remarkable.model.web.UploadRequest;
-import org.rogatio.productivity.remarkable.model.web.UploadResponse;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import es.jlarriba.jrmapi.http.Net;
+import es.jlarriba.jrmapi.model.DeleteDocument;
+import es.jlarriba.jrmapi.model.Document;
+import es.jlarriba.jrmapi.model.MetadataDocument;
+import es.jlarriba.jrmapi.model.UploadDocumentRequest;
+import es.jlarriba.jrmapi.model.UploadDocumentResponse;
+import es.jlarriba.jrmapi.util.FilenameUtils;
+import es.jlarriba.jrmapi.util.JRmApiUtils;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 /**
  * The Class RemarkableClient.
@@ -50,32 +54,41 @@ public class RemarkableClient extends RequestClient {
 	/** The Constant logger. */
 	protected static final Logger logger = LogManager.getLogger(RemarkableClient.class);
 
-	/** The device auth url, see https://akeil.de/posts/remarkable-cloud-api/ */
+	/** The device authentication url, see https://akeil.de/posts/remarkable-cloud-api/ */
 	private final String DEVICE_AUTH_URL = "https://my.remarkable.com/token/json/2/device/new";
 
-	/** The user auth url, see https://akeil.de/posts/remarkable-cloud-api/ */
+	/** The user authentication url, see https://akeil.de/posts/remarkable-cloud-api/ */
 	private final String USER_AUTH_URL = "https://my.remarkable.com/token/json/2/user/new";
 
-	/** The base url. */
+	/** The base url */
 	private final String BASE_URL = "https://document-storage-production-dot-remarkable-production.appspot.com";
 
-	/** The list docs. */
+	/** The list documents request url */
 	private final String LIST_DOCS = BASE_URL + "/document-storage/json/2/docs";
 
-	/** The prefixauthtoken. */
+	/** The prefix of the authentication token. */
 	private final String PREFIXAUTHTOKEN = "Bearer";
 
-	/** The update status. */
-	@SuppressWarnings("unused")
+	/** The update status url */
 	private final String UPDATE_STATUS = BASE_URL + "/document-storage/json/2/upload/update-status";
 
-	/** The upload request. */
-	@SuppressWarnings("unused")
+	/** The upload request url */
 	private final String UPLOAD_REQUEST = BASE_URL + "/document-storage/json/2/upload/request";
 
-	/** The delete. */
-	@SuppressWarnings("unused")
+	/** The delete request url */
 	private final String DELETE = BASE_URL + "/document-storage/json/2/delete";
+
+	private Net net;
+	private Gson gson;
+
+	public RemarkableClient() {
+		net = new Net();
+		gson = new Gson();
+		File workdir = new File(JRmApiUtils.WORKDIR);
+		if (!workdir.exists()) {
+			workdir.mkdir();
+		}
+	}
 
 	/**
 	 * New device token.
@@ -174,64 +187,128 @@ public class RemarkableClient extends RequestClient {
 		return mapper.readValue(json, ContentMetaData[].class);
 	}
 
-//	public void createDir(String name, String parentID, String userToken) {
-//		String id = UUID.randomUUID().toString();
-//		UploadRequest dr = new UploadRequest("CollectionType");
-//
-//		List<Object> uploadRequest = new ArrayList<>();
-//		uploadRequest.add(dr);
-//
-//		ObjectMapper objectMapper = new ObjectMapper();
-//		try {
-//			String rdata = objectMapper.writeValueAsString(uploadRequest);
-//			String response = put(UPLOAD_REQUEST, PREFIXAUTHTOKEN + " " + userToken, rdata);
-//
-//			ObjectMapper mapper = new ObjectMapper();
-//			UploadResponse[] responses = mapper.readValue(response, UploadResponse[].class);
-//
-//			putStream(responses[0].blobURLPut, PREFIXAUTHTOKEN + " " + userToken, Util.createZipDirectory(id));
-//
-//			ContentMetaData metadataDoc = new ContentMetaData();
-//			metadataDoc.iD = id;
-//			
-//			//LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'"))
-//			
-//			metadataDoc.modifiedClient = new Date();
-//			metadataDoc.parent = parentID;
-//			metadataDoc.type = "CollectionType";
-//			metadataDoc.version = 1;
-//			metadataDoc.vissibleName = name;
-//			metadataDoc.currentPage = null;
-//			
-//			List<Object> uploadMetadataDoc = new ArrayList<>();
-//			uploadMetadataDoc.add(metadataDoc);
-//
-//			put(UPDATE_STATUS, PREFIXAUTHTOKEN + " " + userToken, uploadMetadataDoc);
-//
-//			Util.deleteTemporaryDirectory();
-//
-//		} catch (JsonProcessingException e) {
-//			logger.error("Error creating directory on remarkable", e);
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			logger.error("Error creating directory on remarkable", e);
-//			e.printStackTrace();
-//		} catch (Exception e) {
-//			logger.error("Error creating directory on remarkable", e);
-//			e.printStackTrace();
-//		}
-//
-//	}
-	
-	 public void deleteEntry(String id, int version, String userToken) {
-	        DeleteContent deleteDoc = new DeleteContent();
-	        deleteDoc.version = version;
-	        deleteDoc.ID = id;
-	        
-	        List<Object> uploadDeleteDoc = new ArrayList<>();
-	        uploadDeleteDoc.add(deleteDoc);
-	        
-	        put(DELETE, PREFIXAUTHTOKEN + " " + userToken, uploadDeleteDoc);
-	    }
-	
+	public void createDir(String name, String parentID, String userToken) {
+		String id = UUID.randomUUID().toString();
+		UploadDocumentRequest docRequest = new UploadDocumentRequest();
+		docRequest.setID(id);
+		docRequest.setType("CollectionType");
+		docRequest.setVersion(1);
+
+		List<Object> uploadRequest = new ArrayList<>();
+		uploadRequest.add(docRequest);
+		String response = net.put(UPLOAD_REQUEST, userToken, uploadRequest);
+
+		List<UploadDocumentResponse> docResponse = gson.fromJson(response,
+				new TypeToken<List<UploadDocumentResponse>>() {
+				}.getType());
+		net.putStream(docResponse.get(0).getBlobURLPut(), userToken, JRmApiUtils.createZipDirectory(id));
+
+		MetadataDocument metadataDoc = new MetadataDocument();
+		metadataDoc.setID(id);
+		metadataDoc.setModifiedClient(
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'")));
+		metadataDoc.setParent(parentID);
+		metadataDoc.setType("CollectionType");
+		metadataDoc.setVersion(1);
+		metadataDoc.setVissibleName(name);
+
+		List<Object> uploadMetadataDoc = new ArrayList<>();
+		uploadMetadataDoc.add(metadataDoc);
+
+		net.put(UPDATE_STATUS, userToken, uploadMetadataDoc);
+	}
+
+	public void uploadDoc(File file, String parentID, String userToken) {
+		String id = UUID.randomUUID().toString();
+		UploadDocumentRequest docRequest = new UploadDocumentRequest();
+		docRequest.setID(id);
+		docRequest.setType("DocumentType");
+		docRequest.setVersion(1);
+
+		List<Object> uploadRequest = new ArrayList<>();
+		uploadRequest.add(docRequest);
+		String response = net.put(UPLOAD_REQUEST, userToken, uploadRequest);
+
+		List<UploadDocumentResponse> docResponse = gson.fromJson(response,
+				new TypeToken<List<UploadDocumentResponse>>() {
+				}.getType());
+		File doc = JRmApiUtils.createZipDocument(id, file);
+		logger.debug("Doc: " + doc);
+		net.putStream(docResponse.get(0).getBlobURLPut(), userToken, doc);
+		JRmApiUtils.clean(id, file);
+
+		MetadataDocument metadataDoc = new MetadataDocument();
+		metadataDoc.setID(id);
+		metadataDoc.setModifiedClient(
+				LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'")));
+		metadataDoc.setParent(parentID);
+		metadataDoc.setType("DocumentType");
+		metadataDoc.setVersion(1);
+		metadataDoc.setVissibleName(FilenameUtils.getBaseName(file.getAbsolutePath()));
+
+		List<Object> uploadMetadataDoc = new ArrayList<>();
+		uploadMetadataDoc.add(metadataDoc);
+
+		net.put(UPDATE_STATUS, userToken, uploadMetadataDoc);
+	}
+
+	public void deleteEntry(String id, int version, String userToken) {
+		DeleteDocument deleteDoc = new DeleteDocument();
+		deleteDoc.setVersion(version);
+		deleteDoc.setID(id);
+
+		List<Object> uploadDeleteDoc = new ArrayList<>();
+		uploadDeleteDoc.add(deleteDoc);
+
+		net.put(DELETE, userToken, uploadDeleteDoc);
+	}
+
+	public void fetchDoc(Document doc, String path, String userToken) {
+		String response = net.get(LIST_DOCS, userToken, doc.getID());
+		List<Document> docs = gson.fromJson(response, new TypeToken<List<Document>>() {
+		}.getType());
+		if (path.charAt(path.length() - 1) == '/')
+			path += "";
+		else
+			path += "/";
+		File file = new File(JRmApiUtils.WORKDIR + doc.getVissibleName() + ".zip");
+		logger.debug("Download file to " + JRmApiUtils.WORKDIR + doc.getVissibleName() + ".zip");
+		net.getStream(docs.get(0).getBlobURLGet(), userToken, file);
+
+		try {
+			new ZipFile(file.getAbsolutePath()).extractFile(doc.getID() + ".epub", path,
+					doc.getVissibleName() + ".epub");
+			logger.debug("Unzipped epub to " + path + doc.getVissibleName() + ".epub");
+			file.delete();
+		} catch (ZipException e) {
+			logger.debug("No epub, trying pdf...");
+			try {
+				new ZipFile(file.getAbsolutePath()).extractFile(doc.getID() + ".pdf", path,
+						doc.getVissibleName() + ".pdf");
+				logger.debug("Unzipped pdf to " + path + doc.getVissibleName() + ".pdf");
+				file.delete();
+			} catch (ZipException ze) {
+				logger.error("Error unzipping file", e);
+			}
+		}
+	}
+
+	public void exportPdf(Document doc, String path, String filename, String userToken) {
+		String response = net.get(LIST_DOCS, userToken, doc.getID());
+		List<Document> docs = gson.fromJson(response, new TypeToken<List<Document>>() {
+		}.getType());
+
+		File zipFile = new File(JRmApiUtils.WORKDIR + doc.getVissibleName() + ".zip");
+		logger.debug("Download zip to " + JRmApiUtils.WORKDIR + doc.getVissibleName() + ".zip");
+		net.getStream(docs.get(0).getBlobURLGet(), userToken, zipFile);
+
+		try {
+			new ZipFile(zipFile.getAbsolutePath()).extractFile(doc.getID() + ".pdf", path, filename);
+			logger.debug("Unzipped pdf to " + path + doc.getVissibleName() + ".pdf");
+			// zipFile.delete();
+		} catch (ZipException e) {
+			logger.error("Error unzipping file", e);
+		}
+	}
+
 }

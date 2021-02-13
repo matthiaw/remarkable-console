@@ -121,10 +121,16 @@ public class RemarkableManager {
 
 	}
 
-	// DO NOT USE. CREATES BUGGED FOLDER
-//	public void createDir(String name, String parentID) {
-//		client.createDir(name, parentID, userToken);
-//	}
+	public void createDir(String name) {
+		createDir(name, null);
+	}
+
+	public void createDir(String name, String parentID) {
+		if (parentID == null) {
+			parentID = "";
+		}
+		client.createDir(name, parentID, userToken);
+	}
 
 	/**
 	 * Download svg background templates through ssh connection.

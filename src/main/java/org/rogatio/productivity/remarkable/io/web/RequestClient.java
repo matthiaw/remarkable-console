@@ -101,59 +101,59 @@ public class RequestClient {
 		}
 	}
 
-	protected String put(String putUrl, String authToken, File data) throws IOException {
-		URL url = new URL(putUrl);
+//	protected String put(String putUrl, String authToken, File data) throws IOException {
+//		URL url = new URL(putUrl);
+//
+//		FileInputStream fis = new FileInputStream(data);
+//		byte[] fileContents = IOUtils.toByteArray(fis);
+//
+//		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//		con.setRequestMethod("PUT");
+//		con.setRequestProperty("Authorization", authToken);
+//		con.setDoOutput(true);
+//
+//		// System.out.println(fileContents.length);
+//		this.sendData(con, fileContents);
+//		System.out.println(con.getResponseCode());
+//		System.out.println(con.getResponseMessage());
+//		if (con.getResponseCode() == 200) {
+//			logger.info("Put Request at " + putUrl);
+//			return this.read(con.getInputStream());
+//		} else {
+//			return this.read(con.getErrorStream());
+//		}
+//	}
 
-		FileInputStream fis = new FileInputStream(data);
-		byte[] fileContents = IOUtils.toByteArray(fis);
+//	public String put(String url, String token, List<Object> payload) {
+//
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.setSerializationInclusion(Include.NON_NULL);
+//		//DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
+//		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
+//		mapper.setDateFormat(df);
+//
+//		String json = "";
+//		try {
+//			json = mapper.writeValueAsString(payload);
+//			System.out.println(json);
+//		} catch (JsonProcessingException e) {
+//		}
+//
+//		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofString(json))
+//				.header("Authorization", token).build();
+//		return sendRequest(request);
+//	}
 
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("PUT");
-		con.setRequestProperty("Authorization", authToken);
-		con.setDoOutput(true);
-
-		// System.out.println(fileContents.length);
-		this.sendData(con, fileContents);
-		System.out.println(con.getResponseCode());
-		System.out.println(con.getResponseMessage());
-		if (con.getResponseCode() == 200) {
-			logger.info("Put Request at " + putUrl);
-			return this.read(con.getInputStream());
-		} else {
-			return this.read(con.getErrorStream());
-		}
-	}
-
-	public String put(String url, String token, List<Object> payload) {
-
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		//DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'+02:00'");
-		mapper.setDateFormat(df);
-
-		String json = "";
-		try {
-			json = mapper.writeValueAsString(payload);
-			System.out.println(json);
-		} catch (JsonProcessingException e) {
-		}
-
-		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofString(json))
-				.header("Authorization", token).build();
-		return sendRequest(request);
-	}
-
-	public String putStream(String url, String token, File file) {
-		try {
-			HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofFile(file.toPath()))
-					.header("Authorization", token).build();
-			return sendRequest(request);
-		} catch (FileNotFoundException e) {
-			logger.error("file does not exist", e);
-		}
-		return "";
-	}
+//	public String putStream(String url, String token, File file) {
+//		try {
+//			HttpRequest request = HttpRequest.newBuilder(URI.create(url)).PUT(BodyPublishers.ofFile(file.toPath()))
+//					.header("Authorization", token).build();
+//			return sendRequest(request);
+//		} catch (FileNotFoundException e) {
+//			logger.error("file does not exist", e);
+//		}
+//		return "";
+//	}
 
 	private String sendRequest(HttpRequest request) {
 		String res = null;
@@ -199,19 +199,19 @@ public class RequestClient {
 		return read(connection.getInputStream());
 	}
 
-	protected void sendData(HttpURLConnection con, byte[] data) throws IOException {
-		OutputStream bw = null;
-		try {
-			bw = con.getOutputStream();
-			bw.write(data);
-			bw.flush();
-			bw.close();
-		} catch (IOException exception) {
-			logger.error("Error sending data", exception);
-		} finally {
-			this.closeQuietly(bw);
-		}
-	}
+//	protected void sendData(HttpURLConnection con, byte[] data) throws IOException {
+//		OutputStream bw = null;
+//		try {
+//			bw = con.getOutputStream();
+//			bw.write(data);
+//			bw.flush();
+//			bw.close();
+//		} catch (IOException exception) {
+//			logger.error("Error sending data", exception);
+//		} finally {
+//			this.closeQuietly(bw);
+//		}
+//	}
 
 	/**
 	 * Send data.
@@ -278,19 +278,19 @@ public class RequestClient {
 		}
 	}
 
-	/**
-	 * Gets the stream.
-	 *
-	 * @param url       the url
-	 * @param authToken the auth token
-	 * @param file      the file
-	 * @return the stream
-	 */
+//	/**
+//	 * Gets the stream.
+//	 *
+//	 * @param url       the url
+//	 * @param authToken the auth token
+//	 * @param file      the file
+//	 * @return the stream
+//	 */
 	protected void getStream(String url, String authToken, File file) {
 		HttpRequest request = HttpRequest.newBuilder(URI.create(url)).header("Authorization", authToken).build();
 		sendRequest(request, file);
 	}
-
+//
 	protected void sendRequest(HttpRequest request, File file) {
 		try {
 			HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
