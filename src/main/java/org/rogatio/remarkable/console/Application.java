@@ -1,5 +1,5 @@
 /*
- * Remarkable Console - Copyright (C) 2021 Matthias Wegner
+ * Remarkable API - Copyright (C) 2021 Matthias Wegner
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,16 @@
  */
 package org.rogatio.remarkable.console;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.fusesource.jansi.AnsiConsole;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -50,6 +52,18 @@ import picocli.shell.jline3.PicocliJLineCompleter;
  */
 public class Application {
 
+	/**
+	 * Overwrite log4j2 configuration.
+	 */
+	static {
+		try {
+			InputStream inputStream = Application.class.getResourceAsStream("/log4j2.xml");
+			ConfigurationSource source = new ConfigurationSource(inputStream);
+			Configurator.initialize(null, source);
+		} catch (Exception ex) {
+		}
+	}
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Application.class);
 
@@ -65,11 +79,11 @@ public class Application {
 
 		// delete old log files
 		for (File f : new File(".").listFiles()) {
-		    if (f.getName().endsWith(".log")) {
-		        f.delete(); 
-		    }
+			if (f.getName().endsWith(".log")) {
+				f.delete();
+			}
 		}
-		
+
 		// instantiates the remarkable manager
 		RemarkableManager rm = init();
 
