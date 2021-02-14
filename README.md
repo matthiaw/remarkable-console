@@ -13,6 +13,8 @@ RemCom - Remarkable Console (0.1)
 I looked for a paperless solution and bought a [remarkable](https://remarkable.com/). But when i 
 want to share some drawings i was frustrated about the quality of the SVG files and PDF files.  So this project started with the goal to get better exports through a java terminal based application.
 
+Needs [remarkable-api](https://github.com/matthiaw/remarkable-api).
+
 The linux based remarkable saves the pages in zip-file and a binary format.
 Details could be found at [https://remarkablewiki.com/start](https://remarkablewiki.com/start).
 
